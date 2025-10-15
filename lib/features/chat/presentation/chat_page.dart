@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'chat_ui_components/chat_bubble.dart';
+
 class ChatPage extends StatelessWidget {
   final String receiverEmail;
   final String receiverID;
@@ -30,12 +32,12 @@ class ChatPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(receiverEmail),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.grey,
+        elevation: 0,
       ),
       body: Column(
-        children: [
-          Expanded(child: _buildMessageList()),
-          _buildUserInput()
-        ],
+        children: [Expanded(child: _buildMessageList()), _buildUserInput()],
       ),
     );
   }
@@ -57,34 +59,76 @@ class ChatPage extends StatelessWidget {
 
           // return list view
 
-          return Text("loaded");
-          // return ListView(
-          //   children: snapshot.data!.docs
-          //       .map((doc) => _buildMessageItem(doc))
-          //       .toList(),
-          // );
+          // return Text("loaded");
+          return ListView(
+            children: snapshot.data!.docs
+                .map((doc) => _buildMessageItem(doc))
+                .toList(),
+          );
         });
   }
 
   Widget _buildMessageItem(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-    return Text(data.values.toString());
+    // is current user
+    bool isCurrentUser = data['senderID'] == _authService.getCurrentUser()!.uid;
+    // align message to the right if sender is current user
+    var alignment =
+        isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
+    return Container(
+      alignment: alignment,
+     // color: Colors.purple,
+      child: Column(
+        crossAxisAlignment:
+            isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          ChatBubble(
+            message: data["message"],
+            isCurrentUser: isCurrentUser,
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildUserInput() {
-    return Row(
-      children: [
-        Expanded(
-            child: MyTextfield(
-                hintText: "Type a message",
-                isObscured: false,
-                textEditingController: _messageController)
-        ),
-        IconButton(onPressed: (){
-          sendMessage();
-        }, icon: Icon(Icons.send))
-      ],
+    return Padding(
+      padding: EdgeInsets.only(bottom: 25.0),
+      child: Row(
+        children: [
+          Expanded(
+              child: MyTextfield(
+                  hintText: "Type a message",
+                  isObscured: false,
+                  textEditingController: _messageController)),
+          Container(
+            margin: EdgeInsets.only(right: 25),
+            decoration:
+                BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+            child: IconButton(
+                onPressed: () {
+                  sendMessage();
+                },
+                icon: Icon(
+                  Icons.send,
+                  color: Colors.white,
+                )),
+          )
+
+          // Padding(
+          //   padding: EdgeInsets.only(right: 25),
+          //   child:  Container(
+          //   decoration: BoxDecoration(
+          //       color: Colors.green,
+          //       shape: BoxShape.circle
+          //   ),
+          //   child: IconButton(onPressed: (){
+          //     sendMessage();
+          //   }, icon: Icon(Icons.send)),
+          // ),)
+        ],
+      ),
     );
   }
 }

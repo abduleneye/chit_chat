@@ -62,7 +62,7 @@ Future<void> sendMessage(String receiverID, message) async{
   await _firestore
   .collection("chat_rooms")
   .doc(chatRoomID)
-  .collection("message")
+  .collection("messages")
   .add(newMessage.toMap());
 
 }
@@ -78,7 +78,7 @@ Stream<QuerySnapshot> getMessage(String userID, otherUserId){
       .collection("chat_rooms")
       .doc(chatRoomID)
       .collection("messages")
-      .orderBy("timestamp", descending: false)
+      .orderBy("timeStamp", descending: false)
       .snapshots();
 
 }
