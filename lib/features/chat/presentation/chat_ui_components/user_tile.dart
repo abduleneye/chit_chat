@@ -24,11 +24,14 @@ class UserTile extends StatelessWidget {
             ),
 
             SizedBox(width: 20,),
-            
-            Text(
-                userName,
-              overflow: TextOverflow.ellipsis,
-            )
+
+           Expanded(child: Text(
+             userName,
+             overflow: TextOverflow.ellipsis,
+             style: TextStyle(
+                 color: Colors.green
+             ),
+           ),)
           ],
         ),
       ),
