@@ -1,3 +1,4 @@
+import 'package:chit_chat/core/home_page.dart';
 import 'package:chit_chat/core/themes/theme_provider.dart';
 import 'package:chit_chat/features/chat/data/chat_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -104,8 +105,14 @@ class ChatBubble extends StatelessWidget {
             //block button
             TextButton(
                 onPressed: (){
+                  //block user invoked
                   ChatService().blockUser(userId);
+                  //close block user dialog
                   Navigator.pop(context);
+                  //close block user chat page
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
+
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("User Blocked!"))
                   );

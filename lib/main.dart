@@ -1,5 +1,9 @@
 import 'package:chit_chat/features/auth/presentation/auth_gate.dart';
 import 'package:chit_chat/firebase_options.dart';
+import 'package:chit_chat/vtu/dash_board.dart';
+import 'package:chit_chat/vtu/mine/home_vtu.dart';
+import 'package:chit_chat/vtu/mine/splash_screen_vtu.dart';
+import 'package:chit_chat/vtu/splash_tst.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:  AuthGate(),
+      home:  HomeVtu(),// AuthGate(),
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
   }
