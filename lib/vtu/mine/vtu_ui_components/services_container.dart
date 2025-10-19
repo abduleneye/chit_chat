@@ -7,6 +7,7 @@ class ServicesContainer extends StatelessWidget {
   final String serviceInfo;
   final Color serviceIconContainerColor;
   final Color serviceIconColor;
+  final Function onTap;
 
   const ServicesContainer(
       {super.key,
@@ -14,46 +15,52 @@ class ServicesContainer extends StatelessWidget {
       required this.serviceName,
       required this.serviceInfo,
       required this.serviceIconContainerColor,
-        required this.serviceIconColor});
+        required this.serviceIconColor, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Expanded(child: Container(
-      height: 100,
-     // width: size.width * 0.45,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white70),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: serviceIconContainerColor),
-            child: Center(
-              child: Icon(
-                serviceIcon,
-                color: serviceIconColor,
+    return Expanded(
+        child: GestureDetector(
+          onTap: (){
+            onTap();
+          },
+      child: Container(
+        height: 100,
+        // width: size.width * 0.45,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white70),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: serviceIconContainerColor),
+              child: Center(
+                child: Icon(
+                  serviceIcon,
+                  color: serviceIconColor,
+                ),
               ),
             ),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(serviceName),
-          Text(
-            serviceInfo,
-            style: TextStyle(
-                fontSize: 8,
-                color: Colors.grey
+            SizedBox(
+              height: 5,
             ),
-          )
-        ],
+            Text(serviceName),
+            Text(
+              serviceInfo,
+              style: TextStyle(
+                  fontSize: 8,
+                  color: Colors.grey
+              ),
+            )
+          ],
+        ),
       ),
     ));
   }

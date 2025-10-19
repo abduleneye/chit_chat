@@ -1,24 +1,73 @@
 import 'dart:ffi';
 
+import 'package:chit_chat/vtu/mine/data_purchase_screen.dart';
 import 'package:chit_chat/vtu/mine/vtu_ui_components/services_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class HomeVtu extends StatelessWidget {
-  const HomeVtu({super.key});
+import '../../main.dart';
+import 'buy_airtime_screen.dart';
+
+class HomeVtu extends StatefulWidget {
+   HomeVtu({super.key});
+
+  @override
+  State<HomeVtu> createState() => _HomeVtuState();
+}
+
+class _HomeVtuState extends State<HomeVtu> with RouteAware {
+  int _selectedBottomIcon = 0;
+
+  String selectedValue = "";
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+
+
+  }
+@override
+  void didPopNext() {
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+          statusBarColor: Color(0xFF7A2D91)
+      )
+  );    super.didPopNext();
+  }
+  @override
+  void initState() {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(
+            statusBarColor: Color(0xFF7A2D91)
+        )
+    );     super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Scaffold(
+
+    return AnnotatedRegion(value: SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF7A2D91)
+    ), child: Scaffold(
+      extendBodyBehindAppBar: true,
+      //backgroundColor: ,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //Wallet Section
             Container(
-             // height: size.height * 0.35,
+              // height: size.height * 0.35,
               //margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 25),
               decoration: const BoxDecoration(
@@ -30,7 +79,7 @@ class HomeVtu extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
+                      const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Good evening', style: TextStyle(color: Colors.white70, fontSize: 12)),
@@ -74,7 +123,7 @@ class HomeVtu extends StatelessWidget {
                               ],
                             ),
                             Icon(
-                                Icons.hide_source,
+                              Icons.hide_source,
                               size: 16,
                             )
                           ],
@@ -92,7 +141,7 @@ class HomeVtu extends StatelessWidget {
                           child: const Center(
                             child:
                             Text(
-                                "+  Fund Wallet",
+                              "+  Fund Wallet",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -112,51 +161,51 @@ class HomeVtu extends StatelessWidget {
 
             //Promo section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10,),
-              child: Container(
-                height: 60,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Color(0xFFFD6B6B),
-                    borderRadius: BorderRadius.circular(12)
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-
-                      Text(
-                          '🎉 Recharge & Get 5% Cashback!',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          )                      ),
-
-                      Text('Valid until Dec 31st', style: TextStyle(color: Colors.white))
-                    ],
+                padding: const EdgeInsets.symmetric(horizontal: 10,),
+                child: Container(
+                  height: 60,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Color(0xFFFD6B6B),
+                      borderRadius: BorderRadius.circular(12)
                   ),
-                ),
-              )),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        Text(
+                            '🎉 Recharge & Get 5% Cashback!',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            )                      ),
+
+                        Text('Valid until Dec 31st', style: TextStyle(color: Colors.white))
+                      ],
+                    ),
+                  ),
+                )),
 
             SizedBox(height: 20,),
 
 
             //Services Section
-             const Padding(padding: EdgeInsets.symmetric(horizontal: 10),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 10),
               child:Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                      "Services",
+                  const Text(
+                    "Services",
                     style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -164,23 +213,32 @@ class HomeVtu extends StatelessWidget {
                         serviceIcon: Icons.phone_android,
                         serviceName: "Buy Airtime",
                         serviceInfo: "Top up your phone",
-                        serviceIconContainerColor: Color(0xFFFDE9EA),
-                        serviceIconColor: Color(0xFFE59096),),
+                        serviceIconContainerColor: const Color(0xFFFDE9EA),
+                        serviceIconColor: const Color(0xFFE59096),
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> BuyAirtimeScreen()));
 
-                      SizedBox(width: 10,),
+                        },),
+
+                      const SizedBox(width: 10,), //N350
 
                       ServicesContainer(
                         serviceIcon: Icons.wifi,
                         serviceName: "Buy Data",
                         serviceInfo: "Internet bundles",
                         serviceIconContainerColor: Color(0xFFE8F7F7),
-                        serviceIconColor: Color(0xFF78CABC),)
+                        serviceIconColor: Color(0xFF78CABC),
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> DataPurchaseScreen()));
+
+                        },
+                      )
 
 
                     ],
                   ),
 
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -189,7 +247,11 @@ class HomeVtu extends StatelessWidget {
                         serviceName: "Pay Bills",
                         serviceInfo: "Electricity, TV, etc",
                         serviceIconContainerColor: Color(0xFFE8F7F7),
-                        serviceIconColor: Color(0xFF78CABC)),
+                        serviceIconColor: Color(0xFF78CABC),
+                        onTap: (){
+
+                        },
+                      ),
 
                       SizedBox(width: 10,),
 
@@ -199,6 +261,9 @@ class HomeVtu extends StatelessWidget {
                         serviceInfo: "Sports betting",
                         serviceIconContainerColor: Color(0xFFEFF7F2),
                         serviceIconColor: Color(0xFFA6CFBD),
+                        onTap: (){
+
+                        },
 
                       )
 
@@ -231,7 +296,7 @@ class HomeVtu extends StatelessWidget {
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 13,
-                      color: Colors.purple
+                        color: Colors.purple
                     ),
                   ),
                 ],
@@ -247,10 +312,24 @@ class HomeVtu extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.shifting,
         selectedItemColor: Color(0xFF8B5BA8),
         unselectedItemColor: Colors.grey,
-        currentIndex: 0,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        selectedLabelStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 10,
+        ),
+        currentIndex: _selectedBottomIcon,
+        onTap: (index){
+          setState(() {
+            _selectedBottomIcon = index;
+          });
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_rounded),
@@ -271,6 +350,6 @@ class HomeVtu extends StatelessWidget {
         ],
       ),
 
-    );
+    ));
   }
 }

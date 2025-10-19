@@ -1,6 +1,7 @@
 import 'package:chit_chat/features/auth/presentation/auth_gate.dart';
 import 'package:chit_chat/firebase_options.dart';
 import 'package:chit_chat/vtu/dash_board.dart';
+import 'package:chit_chat/vtu/mine/buy_airtime_screen.dart';
 import 'package:chit_chat/vtu/mine/home_vtu.dart';
 import 'package:chit_chat/vtu/mine/splash_screen_vtu.dart';
 import 'package:chit_chat/vtu/splash_tst.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'core/themes/light_mode.dart';
 import 'core/themes/theme_provider.dart';
 import 'features/auth/presentation/login_or_register.dart';
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver();
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,18 +20,20 @@ void main() async{
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
-      child: const MyApp()
+      child:  MyApp()
     )
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+   MyApp({super.key});
+
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [],
       debugShowCheckedModeBanner: false,
       home:  HomeVtu(),// AuthGate(),
       theme: Provider.of<ThemeProvider>(context).themeData,
