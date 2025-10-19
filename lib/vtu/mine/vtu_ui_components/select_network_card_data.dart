@@ -18,6 +18,10 @@ class SelectNetworkCardData extends StatelessWidget {
       height: 80,
       // width: size.width * 0.45,
       decoration: BoxDecoration(
+        border: Border.all(
+          width: 2,
+            color: Color(0xFFF1F1F1),
+        ),
           borderRadius: BorderRadius.circular(12),
           color: Color(0xFFFDFDFD)),
       child: Column(
