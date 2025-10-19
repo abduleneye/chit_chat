@@ -20,6 +20,7 @@ class SelectDataPlanContainer extends StatelessWidget {
     return Container(
       height: 50,
       // width: size.width * 0.45,
+      margin: EdgeInsets.symmetric(vertical: 5),
       padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
           border: Border.all(

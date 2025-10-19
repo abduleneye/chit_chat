@@ -161,13 +161,13 @@ class _DataPurchaseScreenState extends State<DataPurchaseScreen> {
                     ),
                     //
                     const SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                     //Data Selection Expanded Column
                     ListView.builder(
                       shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        padding: EdgeInsets.symmetric(vertical: 5),
+                        padding: EdgeInsets.symmetric(vertical: 0),
                         itemCount: dataCatalogue.length,
                         itemBuilder: (context, index){
                           return  SelectDataPlanContainer(
