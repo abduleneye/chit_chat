@@ -1,0 +1,28 @@
+Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ReferralsStatsContainer(
+                      serviceIcon: FontAwesomeIcons.person,
+                      statValue: '42',
+                      statName: 'Total Referrals',
+                      statIconContainerColour: const Color(0xFFE9E1EC),
+                      statIconColour: const Color(0xFF936BA3),
+                      onTap: () {},
+                    ),
+                    ReferralsStatsContainer(
+                      serviceIcon: FontAwesomeIcons.person,
+                      statValue: '42',
+                      statName: 'Total Referrals',
+                      statIconContainerColour: const Color(0xFFE9E1EC),
+                      statIconColour: const Color(0xFF936BA3),
+                      onTap: () {},
+                    ),
+                    ReferralsStatsContainer(
+                      serviceIcon: FontAwesomeIcons.person,
+                      statValue: '42',
+                      statName: 'Total Referrals',
+                      statIconContainerColour: const Color(0xFFE9E1EC),
+                      statIconColour: const Color(0xFF936BA3),
+                      onTap: () {},
+                    ),              ],
+                )

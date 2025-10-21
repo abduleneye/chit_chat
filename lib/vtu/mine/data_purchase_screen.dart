@@ -22,12 +22,6 @@ class _DataPurchaseScreenState extends State<DataPurchaseScreen> {
     SelectDataPlanContainer(gigAmount: "5", validityPeriod: "30", price: "1750"),
     SelectDataPlanContainer(gigAmount: "10", validityPeriod: "30", price: "3500"),
     SelectDataPlanContainer(gigAmount: "15", validityPeriod: "30", price: "5250"),
-    SelectDataPlanContainer(gigAmount: "1", validityPeriod: "30", price: "350"),
-    SelectDataPlanContainer(gigAmount: "1", validityPeriod: "30", price: "350"),
-    SelectDataPlanContainer(gigAmount: "1", validityPeriod: "30", price: "350"),
-
-
-
 
   ];
   @override
@@ -196,6 +190,11 @@ class _DataPurchaseScreenState extends State<DataPurchaseScreen> {
                           padding: EdgeInsets.only(left: 10),
                           height: 50,
                           decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 2,
+                              color: Color(0xFFEBEBEE),
+
+                            ),
                             borderRadius: BorderRadius.circular(12),
                             color: Color(0xFFFDFDFD),
                           ),
