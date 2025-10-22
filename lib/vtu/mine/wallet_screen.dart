@@ -410,6 +410,7 @@ class _WalletScreenState extends State<WalletScreen> {
               );
             });
       case 'Debit':
+
         return ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
