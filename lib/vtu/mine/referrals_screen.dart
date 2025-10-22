@@ -13,7 +13,7 @@ class ReferralsScreen extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Stack(
-        clipBehavior: Clip.none,
+       // clipBehavior: Clip.none,
         children: [
           // Top Container
           Container(

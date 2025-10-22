@@ -5,6 +5,7 @@ import 'package:chit_chat/vtu/mine/fund_betting_screen.dart';
 import 'package:chit_chat/vtu/mine/pay_bills_screen.dart';
 import 'package:chit_chat/vtu/mine/referrals_screen.dart';
 import 'package:chit_chat/vtu/mine/vtu_ui_components/services_container.dart';
+import 'package:chit_chat/vtu/mine/wallet_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,7 +71,8 @@ class _HomeVtuState extends State<HomeVtu> with RouteAware {
         index: _selectedBottomIcon,
         children: [
           DashBoardScreen(),
-          ReferralsScreen()
+          ReferralsScreen(),
+          WalletScreen()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
