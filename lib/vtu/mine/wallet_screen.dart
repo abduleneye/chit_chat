@@ -34,6 +34,14 @@ class _WalletScreenState extends State<WalletScreen> {
       transactionStatus: 'Completed',
     ),
     TransactionHistoryContainer(
+      credit: false,
+      transactionName: 'Airtel Data Bundle - 2GB',
+      transactionDataTime: '2024-10-14:06:45 PM',
+      transactionAmount: '1,500',
+      transactionStatus: 'Completed',
+      transactionTo: "To: 08098765432",
+    ),
+    TransactionHistoryContainer(
       credit: true,
       transactionName: 'Wallet Funding via Bank Transfer',
       transactionDataTime: '2024: 10: 15 09:15 AM',
@@ -47,6 +55,15 @@ class _WalletScreenState extends State<WalletScreen> {
       transactionAmount: '200',
       transactionStatus: 'Completed',
     ),
+    TransactionHistoryContainer(
+      credit: false,
+      transactionName: 'Airtel Data Bundle - 2GB',
+      transactionDataTime: '2024-10-14:06:45 PM',
+      transactionAmount: '1,500',
+      transactionStatus: 'Completed',
+      transactionTo: "To: 08098765432",
+    ),
+
   ];
   List<TransactionHistoryContainer> get creditTransactionHistory =>
       allTransactionHistory.where((item) => item.credit).toList();
@@ -184,7 +201,7 @@ class _WalletScreenState extends State<WalletScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //Quick Select Section
+                  //Quick Fund Section
                   // const SizedBox(height: 10,),
                   const Text(
                     "Quick Fund",
@@ -198,18 +215,24 @@ class _WalletScreenState extends State<WalletScreen> {
                   ),
                   Column(
                     children: [
-                      Row(
-                        children: [
-                          QuickSelectContainer(amount: '1,000'),
-                          QuickSelectContainer(amount: '2,000'),
-                          QuickSelectContainer(
-                            amount: '5,000',
-                          ),
-                          QuickSelectContainer(
-                            amount: '10,000',
-                          )
-                        ],
-                      ),
+                     SizedBox(
+                       height:30,
+                       child:  ListView(
+                         scrollDirection: Axis.horizontal,
+                         children: [
+                           QuickSelectContainer(amount: '1,000'),
+                           QuickSelectContainer(amount: '2,000'),
+                           QuickSelectContainer(
+                             amount: '5,000',
+                           ),
+                           QuickSelectContainer(
+                             amount: '10,000',
+                           ),
+
+                         ],
+                       ),
+                     )
+
                     ],
                   ),
 
@@ -354,18 +377,14 @@ class _WalletScreenState extends State<WalletScreen> {
 
                   //Transaction History Holder section
                   Container(
+                    height: 300,
                     padding: EdgeInsets.only(
-                        left: 10, right: 10, bottom: 20, top: 10),
+                        left: 10, right: 10, bottom: 20, top: 0),
                     width: double.infinity,
                     decoration: BoxDecoration(
                         color: Color(0xFFFDFDFD),
                         borderRadius: BorderRadius.circular(8)),
-                    child: Center(
-                      child:  AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        child: _buildTabContent(selected),
-                      ),
-                    ),
+                    child: _buildTabContent(selected),
                   ),
                 ],
               ))
@@ -380,7 +399,7 @@ class _WalletScreenState extends State<WalletScreen> {
       case 'All':
         return  ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+           // physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.symmetric(vertical: 0),
             itemCount: allTransactionHistory.length,
             itemBuilder: (context, index) {
@@ -425,7 +444,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 transactionStatus: debitTransactionHistory[index].transactionStatus,
                 transactionTo: debitTransactionHistory[index].transactionTo,
               );
-            });;
+            });
       default:
         return const SizedBox();
     }

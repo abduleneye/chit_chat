@@ -52,21 +52,22 @@ class TransactionHistoryContainer extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("MTN Airtime Purchase",
+                      Text(transactionName,
                           style: TextStyle(
                               fontSize: 12,
                               color: Color(0xFF606467),
                               fontWeight: FontWeight.w700),
                           overflow: TextOverflow.ellipsis),
+                      if (transactionTo != null)
+                        Text(
+                          transactionTo!,
+                          style: TextStyle(
+                              fontSize: 8,
+                              color: Color(0xFF89898A),
+                              fontWeight: FontWeight.w500),
+                        ),
                       Text(
-                        "To: 0801234567",
-                        style: TextStyle(
-                            fontSize: 8,
-                            color: Color(0xFF89898A),
-                            fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        "2024:10:15 10:30",
+                        transactionDataTime,
                         style: TextStyle(
                             fontSize: 8,
                             color: Color(0xFF89898A),
