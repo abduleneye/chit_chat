@@ -6,8 +6,9 @@ class QuickSelectContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(child: Container(
+    return Flexible(child: Container(
       height: 30,
+      width: 80,
       padding: EdgeInsets.symmetric(horizontal: 10),
       margin: EdgeInsets.only(right: 10),
       decoration: BoxDecoration(

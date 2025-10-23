@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:chit_chat/vtu/mine/data_purchase_screen.dart';
 import 'package:chit_chat/vtu/mine/fund_betting_screen.dart';
 import 'package:chit_chat/vtu/mine/pay_bills_screen.dart';
+import 'package:chit_chat/vtu/mine/profile_screen.dart';
 import 'package:chit_chat/vtu/mine/referrals_screen.dart';
 import 'package:chit_chat/vtu/mine/vtu_ui_components/services_container.dart';
 import 'package:chit_chat/vtu/mine/wallet_screen.dart';
@@ -72,7 +73,8 @@ class _HomeVtuState extends State<HomeVtu> with RouteAware {
         children: [
           DashBoardScreen(),
           ReferralsScreen(),
-          WalletScreen()
+          WalletScreen(),
+          ProfileScreen()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
