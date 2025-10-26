@@ -213,27 +213,23 @@ class _WalletScreenState extends State<WalletScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Column(
-                    children: [
-                     SizedBox(
-                       height:30,
-                       child:  ListView(
-                         scrollDirection: Axis.horizontal,
-                         children: [
-                           QuickSelectContainer(amount: '1,000'),
-                           QuickSelectContainer(amount: '2,000'),
-                           QuickSelectContainer(
-                             amount: '5,000',
-                           ),
-                           QuickSelectContainer(
-                             amount: '10,000',
-                           ),
+                  SizedBox(
+                    height:30,
+                    width: double.infinity,
+                    child:  ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        QuickSelectContainer(amount: '1,000'),
+                        QuickSelectContainer(amount: '2,000'),
+                        QuickSelectContainer(
+                          amount: '5,000',
+                        ),
+                        QuickSelectContainer(
+                          amount: '10,000',
+                        ),
 
-                         ],
-                       ),
-                     )
-
-                    ],
+                      ],
+                    ),
                   ),
 
                   const SizedBox(

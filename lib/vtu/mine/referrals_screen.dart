@@ -250,18 +250,18 @@ class ReferralsScreen extends StatelessWidget {
                         ),
                         HowItWorksContainer(
                           stepNumber: "2",
-                          objective: "Share your code",
-                          how: 'Send your referral code to friends',
+                          objective: "Friend signs up",
+                          how: 'They use your code during registration',
                         ),
                         HowItWorksContainer(
                           stepNumber: "3",
-                          objective: "Share your code",
-                          how: 'Send your referral code to friends',
+                          objective: "First transaction",
+                          how: 'Friend makes their first transaction',
                         ),
                         HowItWorksContainer(
                           stepNumber: "4",
-                          objective: "Share your code",
-                          how: 'Send your referral code to friends',
+                          objective: "Get paid",
+                          how: 'Earn ₦20 bonus instantly!',
                         )
                       ],
                     ),

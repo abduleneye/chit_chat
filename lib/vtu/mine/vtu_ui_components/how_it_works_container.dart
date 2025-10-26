@@ -35,25 +35,25 @@ class HowItWorksContainer extends StatelessWidget {
           SizedBox(
             width: 15,
           ),
-          Column(
+          Flexible(child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 objective,
                 style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 12,
                     color: Color(0xFF3C4450),
                     fontWeight: FontWeight.w700),
               ),
               Text(
                 how,
-                style: TextStyle(
-                    fontSize: 14,
+                style: TextStyle(overflow: TextOverflow.ellipsis,
+                    fontSize: 10,
                     color: Color(0xFF3C4450),
                     fontWeight: FontWeight.w500),
               ),
             ],
-          )
+          ))
         ],
       ),
     );

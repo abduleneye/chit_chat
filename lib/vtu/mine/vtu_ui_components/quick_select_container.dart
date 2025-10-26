@@ -6,9 +6,9 @@ class QuickSelectContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(child: Container(
-      height: 30,
-      width: 80,
+    return Container(
+       height: 30,
+      // width: 80,
       padding: EdgeInsets.symmetric(horizontal: 10),
       margin: EdgeInsets.only(right: 10),
       decoration: BoxDecoration(
@@ -22,11 +22,11 @@ class QuickSelectContainer extends StatelessWidget {
               color: Color(0xFF7A2D91),
               fontWeight: FontWeight.w600,
               fontSize: 12,
-            overflow: TextOverflow.ellipsis
+              overflow: TextOverflow.ellipsis
           ),
 
         ),
       ),
-    ));
+    );
   }
 }

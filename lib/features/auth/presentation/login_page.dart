@@ -1,6 +1,7 @@
 import 'package:chit_chat/features/auth/data/auth_service.dart';
 import 'package:chit_chat/features/auth/presentation/login_or_register.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../core/components/my_button.dart';
 import '../../../core/components/my_textfield.dart';
@@ -34,8 +35,10 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.surface,
+    return  AnnotatedRegion(value: SystemUiOverlayStyle(
+      statusBarColor: Theme.of(context).colorScheme.surface,
+    ), child: Scaffold(
+    backgroundColor: Theme.of(context).colorScheme.surface,
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -124,6 +127,6 @@ class LoginPage extends StatelessWidget {
               ],
             ),
           ),
-        ));
+        )));
   }
 }

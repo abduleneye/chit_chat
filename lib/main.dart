@@ -4,11 +4,13 @@ import 'package:chit_chat/vtu/dash_board.dart';
 import 'package:chit_chat/vtu/mine/buy_airtime_screen.dart';
 import 'package:chit_chat/vtu/mine/home_vtu.dart';
 import 'package:chit_chat/vtu/mine/splash_screen_vtu.dart';
+import 'package:chit_chat/vtu/s_gpt.dart';
 import 'package:chit_chat/vtu/splash_tst.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'core/home_home.dart';
 import 'core/themes/light_mode.dart';
 import 'core/themes/theme_provider.dart';
 import 'features/auth/presentation/login_or_register.dart';
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorObservers: [],
       debugShowCheckedModeBanner: false,
-      home:  HomeVtu(),// AuthGate(),
+      home:  HomeHome(),//SplashScreeng(),// AuthGate(),
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
   }
