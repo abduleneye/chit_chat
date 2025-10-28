@@ -1,35 +1,59 @@
 import 'package:chit_chat/features/auth/data/auth_service.dart';
+import 'package:chit_chat/features/auth/presentation/auth_bloc/auth_state.dart';
 import 'package:chit_chat/features/auth/presentation/login_or_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../core/components/my_button.dart';
 import '../../../core/components/my_textfield.dart';
+import 'auth_bloc/auth_bloc.dart';
+import 'auth_bloc/auth_event.dart';
 
-class LoginPage extends StatelessWidget {
-  //email and pw controllers
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _pwController = TextEditingController();
-
-  //tap to go to reg page
+class LoginPage extends StatefulWidget {
   final void Function()? onTap;
 
 
   LoginPage({super.key, required this.onTap});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  //email and pw controllers
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _pwController = TextEditingController();
+
   //login method
   void login(BuildContext context) async{
-    //auth service
-    final authService = AuthService();
+    if(_emailController.text.isEmpty || _pwController.text.isEmpty){
+      Fluttertoast.showToast(
+        msg: "fields can't be empty",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.blue,
+      );
 
-    //try login
-    try{
-      await authService.signInWithemailAndPassword(_emailController.text, _pwController.text);
-    } catch(e){
-      showDialog(context: context, builder: (context) => AlertDialog(
-        title: Text(e.toString()),
-      ));
+    } else {
+      context.read<AuthBloc>().add(SignInWithEmailAndPassword(email: _emailController.text, password: _pwController.text));
+
     }
+
+    // //auth service
+    // final authService = AuthService();
+    //
+    // //try login
+    // try{
+    //   await authService.signInWithEmailAndPassword(_emailController.text, _pwController.text);
+    // } catch(e){
+    //   showDialog(context: context, builder: (context) => AlertDialog(
+    //     title: Text(e.toString()),
+    //   ));
+    // }
 
   }
 
@@ -68,33 +92,67 @@ class LoginPage extends StatelessWidget {
                 ),
 
                 // email tf
-                MyTextfield(
+            BlocBuilder<AuthBloc, AuthState>(builder: (context, authState){
+              if(authState is SignInLoading){
+                return  MyTextfield(
+                  isEnabled: false,
                   hintText: 'Email',
                   isObscured: false,
                   textEditingController: _emailController,
-                ),
+                );
+              } else{
+                return MyTextfield(
+                  hintText: 'Email',
+                  isObscured: false,
+                  textEditingController: _emailController,
+                );
+              }
+            }),
 
                 const SizedBox(
                   height: 10,
                 ),
 
-                // email tf
-                MyTextfield(
-                  hintText: 'Password',
-                  isObscured: true,
-                  textEditingController: _pwController,
-                ),
+                // pw tf
+               BlocBuilder<AuthBloc, AuthState>(builder: (context, authState){
+                 if(authState is SignInLoading){
+                   return  MyTextfield(
+                     isEnabled: false,
+                     hintText: 'Password',
+                     isObscured: true,
+                     textEditingController: _pwController,
+                   );
+                 } else{
+                   return MyTextfield(
+                     hintText: 'Password',
+                     isObscured: true,
+                     textEditingController: _pwController,
+                   );
+                 }
+               }),
 
                 const SizedBox(
                   height: 15,
                 ),
                 //login button
-                MyButton(
-                  onTap: (){
-                    login(context);
-                  },
-                  buttonText: "Login",
-                ),
+                BlocBuilder<AuthBloc, AuthState>(builder: (context, authState){
+                  if(authState is SignInLoading){
+                    return MyButton(
+                      isLoading: true,
+                      onTap: (){
+                        login(context);
+                      },
+                      buttonText: "Login",
+                    );
+                  } else {
+                    return MyButton(
+                      onTap: (){
+                        login(context);
+                      },
+                      buttonText: "Login",
+                    );
+                  }
+                }),
                 const SizedBox(
                   height: 15,
                 ),
@@ -111,7 +169,7 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: onTap,
+                      onTap: widget.onTap,
                       child:  Text(
                         "Register now",
                         style: TextStyle(
