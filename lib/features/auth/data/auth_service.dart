@@ -58,19 +58,6 @@ class AuthService extends AuthServiceRepo{
           email: email,
           password: password
       );
-      // save user info in a seperate doc
-
-      try {
-        await _fireStore.collection("Users").doc(userCredential.user!.uid).set({
-          'uid': userCredential.user!.uid,
-          'email': userCredential.user!.email,
-        });
-        print("User added to Firestore ✅");
-      } catch (e) {
-        print("Firestore error: $e");
-        Fluttertoast.showToast(msg: e.toString());
-
-      }
 
 //eneye53@gmail.com
       return userCredential;
