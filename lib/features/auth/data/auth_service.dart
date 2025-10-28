@@ -30,7 +30,6 @@ class AuthService extends AuthServiceRepo{
       //create user
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email,
           password: password);
-      await _auth.signOut();
       Fluttertoast.showToast(msg: "Login");
       // save user info in a seperate doc
       try {
@@ -42,6 +41,8 @@ class AuthService extends AuthServiceRepo{
       } catch (e) {
         print("Firestore error: $e");
       }
+
+      await _auth.signOut();
 
       return userCredential;
     } on FirebaseAuthException catch(e){

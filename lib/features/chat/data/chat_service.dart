@@ -43,10 +43,13 @@ Stream<List<Map<String, dynamic>>> getUsersStream(){
 //GET ALL USERS STREAM EXCEPT BLOCKED USERS
   Stream<List<Map<String, dynamic>>> getUsersStreamExcludingBlocked(){
   final currentUser = _auth.currentUser;
-
+  if (currentUser == null) {
+    // Return an empty stream if user is not logged in
+    return Stream.value([]);
+  }
   return _firestore
       .collection('Users')
-      .doc(currentUser!.uid)
+      .doc(currentUser.uid)
       .collection('BlockedUsers')
       .snapshots()
       .asyncMap((snapshot)async {

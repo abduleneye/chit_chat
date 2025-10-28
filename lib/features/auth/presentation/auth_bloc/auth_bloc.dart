@@ -4,6 +4,7 @@ import 'package:chit_chat/features/auth/presentation/auth_bloc/auth_event.dart';
 import 'package:chit_chat/features/auth/presentation/auth_bloc/auth_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../domain/auth_service_repo.dart';
 
@@ -16,7 +17,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
 //    StreamSubscription<User?>? _userSubscription;
 
-    _userSubscription = authRepo.user.listen((user){
+    _userSubscription = authRepo.user.debounceTime(const Duration(milliseconds: 0)).listen((user){
 
         add(AuthUserChanged(user));
 
@@ -29,7 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(SignUpLoading());
       try{
         final userCredential =  await authRepo.signUpWitEmailAndPassWord(event.email, event.password);
-        emit(UserAuthenticated(currentUser: userCredential.user));
+        //emit(UserAuthenticated(currentUser: userCredential.user));
       } catch(e){
         emit(SignUpError(errorMessage: e.toString()));
       }
@@ -40,7 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(SignInLoading());
       try{
         final userCredential =  await authRepo.signInWithEmailAndPassword(event.email, event.password);
-        emit(UserAuthenticated(currentUser: userCredential.user));
+      //  emit(UserAuthenticated(currentUser: userCredential.user));
       } catch(e){
         emit(SignInError(errorMessage: e.toString()));
 
