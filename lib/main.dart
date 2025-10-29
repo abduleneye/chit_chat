@@ -20,6 +20,7 @@ import 'core/themes/light_mode.dart';
 import 'core/themes/theme_provider.dart';
 import 'features/auth/presentation/auth_bloc/auth_bloc.dart';
 import 'features/auth/presentation/login_or_register.dart';
+import 'features/chat/presentation/users_bloc/users_bloc.dart';
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver();
 
 void main() async{
@@ -31,7 +32,7 @@ void main() async{
           create: (context)=> AuthBloc(AuthService()),
       ),
       BlocProvider(
-          create: (context)=> ChatBloc(ChatService()),
+        create: (context)=> UsersBloc(ChatService()),
       ),
     ], child:  ChangeNotifierProvider(
         create: (context) => ThemeProvider(),

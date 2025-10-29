@@ -1,22 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 abstract class ChatStates{
-
-
 }
-
 class ChatInitial extends ChatStates{
-
 }
 
-class LoadingUsers extends ChatStates{
-
+class LoadingMessages extends ChatStates{
 }
-
-class UsersLoaded extends ChatStates{
-  final List<Map<String, dynamic>> users;
-  UsersLoaded({required this.users});
-}
-
-class UsersLoadingError extends ChatStates{
-  final String errorMessage;
-  UsersLoadingError({required this.errorMessage});
+class MessagesLoaded extends ChatStates{
+  final QuerySnapshot messages;
+  MessagesLoaded({required this.messages});
 }

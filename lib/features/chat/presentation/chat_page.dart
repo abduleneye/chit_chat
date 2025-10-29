@@ -1,9 +1,13 @@
 import 'package:chit_chat/core/components/my_textfield.dart';
 import 'package:chit_chat/features/auth/data/auth_service.dart';
 import 'package:chit_chat/features/chat/data/chat_service.dart';
+import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_bloc.dart';
+import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_events.dart';
+import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'chat_ui_components/chat_bubble.dart';
@@ -30,6 +34,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
+    context.read<ChatBloc>().add(GetMessage(currentUserID: _authService.getCurrentUser()!.uid, recipientsUserID: widget.receiverID));
 
     //add listener to focus node
     myFocusNode.addListener((){
@@ -42,7 +47,6 @@ class _ChatPageState extends State<ChatPage> {
         );
       }
     });
-
     // auto scroll on page entered
     Future.delayed(
       const Duration(milliseconds: 500), ()=> scrollDown(),
@@ -70,8 +74,11 @@ class _ChatPageState extends State<ChatPage> {
   //send message
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(
-          widget.receiverID, _messageController.text.toString());
+      // await _chatService.sendMessage(
+      //     widget.receiverID, _messageController.text.toString());
+
+      context.read<ChatBloc>().add(SendMessage(receiverID: widget.receiverID, message: _messageController.text.toString()));
+
       _messageController.clear();
       scrollDown();
       //print(_authService.getCurrentUser()!.uid + _authService.getCurrentUser()!.email.toString());
@@ -95,29 +102,25 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageList() {
     String senderID = _authService.getCurrentUser()!.uid;
-    return StreamBuilder(
-        stream: _chatService.getMessage(widget.receiverID, senderID),
-        builder: (context, snapshot) {
-          //errors
-          if (snapshot.hasError) {
-            return const Text("Error");
-          }
+    return BlocBuilder<ChatBloc, ChatStates>(builder: (context, chatState){
+      if(chatState is MessagesLoaded){
+        return ListView(
+          controller: _scrollController,
+          children: chatState.messages.docs
+              .map((doc) => _buildMessageItem(doc))
+              .toList(),
+        );
+      }
+      else if(chatState is LoadingMessages){
+        return Center(
+          child: Text("Messages Loading"),
+        );
+      }
 
-          //loading
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading");
-          }
-
-          // return list view
-
-          // return Text("loaded");
-          return ListView(
-            controller: _scrollController,
-            children: snapshot.data!.docs
-                .map((doc) => _buildMessageItem(doc))
-                .toList(),
-          );
-        });
+      return Center(
+        child: Text("Wahala"),
+      );
+    });
   }
 
   Widget _buildMessageItem(DocumentSnapshot doc) {

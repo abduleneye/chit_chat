@@ -1,11 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 abstract class ChatEvents {}
 
-class GetAllUsersStream extends ChatEvents {}
-
-class GetAllUsersStreamExcludingBlocked extends ChatEvents {
-  final List<Map<String, dynamic>> users;
-  GetAllUsersStreamExcludingBlocked({required this.users});
-}
 
 class GetBlockedUsers extends ChatEvents{
   final String userId;
@@ -22,6 +18,11 @@ class GetMessage extends ChatEvents {
   final String currentUserID;
   final String recipientsUserID;
   GetMessage({required this.currentUserID, required this.recipientsUserID});
+}
+
+class MessageReceived extends ChatEvents {
+  final QuerySnapshot message;
+  MessageReceived({required this.message});
 }
 
 class ReportUser extends ChatEvents{

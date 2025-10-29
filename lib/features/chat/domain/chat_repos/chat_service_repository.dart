@@ -6,7 +6,7 @@ abstract class ChatServiceRepository{
   Stream<List<Map<String, dynamic>>> getAllUsersStream();
   Stream<List<Map<String, dynamic>>> getAllUsersExcludingBlocked();
   Stream<List<Map<String, dynamic>>> getAllBlockedUsers(String currentUserId);
-  Future<void> sendMessage(String currentUserId, String recepientUserId);
+  Future<void> sendMessage(String receiverId,  message);
   Future<void> reportUser(String messageId, String userId);
   Future<void> blockUser(String userId);
   Future<void> unBlockUser(String blockedUserId);

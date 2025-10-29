@@ -3,37 +3,47 @@ import 'dart:async';
 import 'package:chit_chat/features/chat/domain/chat_repos/chat_service_repository.dart';
 import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_events.dart';
 import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_states.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatBloc extends Bloc<ChatEvents, ChatStates> {
 
-   StreamSubscription<List<Map<String, dynamic>>>? _chatUsersSubscription;
+   StreamSubscription<QuerySnapshot>? _messageSubscription;
 
-  ChatBloc(ChatServiceRepository chatRepo): super(LoadingUsers()){
 
-    _chatUsersSubscription = chatRepo.getAllUsersExcludingBlocked().listen(
-          (allUsers) {
-        print('Stream emitted: $allUsers');
-        add(GetAllUsersStreamExcludingBlocked(users: allUsers));
+   ChatBloc(ChatServiceRepository chatRepo): super(LoadingMessages()){
+
+
+    on<SendMessage>((event, emit) async {
+       await chatRepo.sendMessage(event.receiverID, event.message);
+    });
+
+    on<GetMessage>((event, emit) async{
+      _messageSubscription = chatRepo.getMessage(event.currentUserID, event.recipientsUserID).listen(
+              (messages){
+                print("Stream emitted: ${messages.docs.length} messages");
+                add(MessageReceived(message: messages));
       },
-      onError: (error) {
-        print('Stream error: $error');
-      },
-      onDone: () {
-        print('Stream closed');
-      },
-    );
+        onError: (error) {
+          print('Stream error: $error');
+        },
+        onDone: () {
+          print('Stream closed');
+        },
+      );
 
+    });
 
-    on<GetAllUsersStreamExcludingBlocked>((event, emit){
-      emit(UsersLoaded(users: event.users));
+    on<MessageReceived>((event, emit){
+      emit(MessagesLoaded(messages: event.message));
+
     });
 
   }
 
    @override
    Future<void> close() {
-     _chatUsersSubscription?.cancel(); // <- this counts as usage
+     _messageSubscription?.cancel(); // <- this counts as usage
      return super.close();
    }
 

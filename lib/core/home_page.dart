@@ -2,6 +2,8 @@ import 'package:chit_chat/features/auth/data/auth_service.dart';
 import 'package:chit_chat/features/chat/data/chat_service.dart';
 import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_bloc.dart';
 import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_states.dart';
+import 'package:chit_chat/features/chat/presentation/users_bloc/users_bloc.dart';
+import 'package:chit_chat/features/chat/presentation/users_bloc/users_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,18 +13,12 @@ import '../features/chat/presentation/chat_page.dart';
 import '../features/chat/presentation/chat_ui_components/user_tile.dart';
 import 'components/my_drawer.dart';
 
-
 class HomePage extends StatelessWidget {
-
   HomePage({super.key});
 
   //chat and auth services
   final ChatService _chatService = ChatService();
   //final AuthService _authService = AuthService();
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -32,46 +28,58 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.grey,
         elevation: 0,
-
       ),
       drawer: const MyDrawer(),
       body: _buildUserList(),
     );
   }
-  Widget _buildUserList(){
-    return  BlocBuilder<ChatBloc, ChatStates>(builder: (context, chatStates){
-      if(chatStates is UsersLoaded){
-        if(chatStates.users.isNotEmpty){
-          return ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(vertical: 0),
-              itemCount: chatStates.users.length,
-              itemBuilder: (context, index){
-                return UserTile(
-                  userName: chatStates.users[index]["email"],
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> ChatPage(receiverEmail: chatStates.users[index]["email"], receiverID: chatStates.users[index]["uid"],)));
-                  },
-                ) ;
-              }
-          );
-        } else {
+
+  Widget _buildUserList() {
+    return BlocBuilder<UsersBloc, UsersStates>(
+      builder: (context, userStates) {
+        if (userStates is UsersLoaded) {
+          if (userStates.users.isNotEmpty) {
+            return ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(vertical: 0),
+                itemCount: userStates.users.length,
+                itemBuilder: (context, index) {
+                  return UserTile(
+                    userName: userStates.users[index]["email"],
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BlocProvider(create: (_)=> ChatBloc(
+                                _chatService
+                              ),
+                                child: ChatPage(
+                                  receiverEmail: userStates.users[index]
+                                  ["email"],
+                                  receiverID: userStates.users[index]["uid"],
+                                ),
+
+                              )
+                          ));
+                    },
+                  );
+                });
+          } else {
+            return Center(
+              child: Text("No users found"),
+            );
+          }
+        } else if (userStates is LoadingUsers) {
           return Center(
-            child: Text("No users found"),
+            child: Text("Loading user...."),
           );
         }
-      }
-      else if(chatStates is LoadingUsers){
         return Center(
-          child: Text("Loading user...."),
+          child: Text("unknown error"),
         );
-
-      }
-      return Center(
-        child: Text("unknown error"),
-      );
-    },);
+      },
+    );
   }
 
   //
@@ -97,7 +105,6 @@ class HomePage extends StatelessWidget {
   //
   //
   // }
-
 }
 
 // import 'package:chit_chat/features/auth/data/auth_service.dart';
