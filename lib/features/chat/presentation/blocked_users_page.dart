@@ -25,7 +25,7 @@ class BlockedUsersPage extends StatelessWidget {
                  child: Text("Cancel")
              ),
              TextButton(onPressed: (){
-               _chatService.unblockUser(userId);
+               _chatService.unBlockUser(userId);
                Navigator.pop(context);
                ScaffoldMessenger.of(context).showSnackBar(
                  SnackBar(content: Text("User Unblocked"))
@@ -51,7 +51,7 @@ class BlockedUsersPage extends StatelessWidget {
         elevation: 0,
       ),
       body: StreamBuilder<List<Map<String, dynamic>>>(
-          stream: _chatService.getBlockedUsers(userId),
+          stream: _chatService.getAllBlockedUsers(userId),
           builder: (context, snapshot){
             //errors
             if(snapshot.hasError){

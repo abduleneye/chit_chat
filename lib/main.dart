@@ -1,5 +1,8 @@
+import 'package:chit_chat/core/home_page.dart';
 import 'package:chit_chat/features/auth/data/auth_service.dart';
 import 'package:chit_chat/features/auth/presentation/auth_gate.dart';
+import 'package:chit_chat/features/chat/data/chat_service.dart';
+import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_bloc.dart';
 import 'package:chit_chat/firebase_options.dart';
 import 'package:chit_chat/vtu/dash_board.dart';
 import 'package:chit_chat/vtu/mine/buy_airtime_screen.dart';
@@ -23,13 +26,17 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
+    MultiBlocProvider(providers: [
       BlocProvider(
-        create: (context)=> AuthBloc(AuthService()),
-        child:  ChangeNotifierProvider(
-            create: (context) => ThemeProvider(),
-            child:  MyApp()
-        )
-        ),
+          create: (context)=> AuthBloc(AuthService()),
+      ),
+      BlocProvider(
+          create: (context)=> ChatBloc(ChatService()),
+      ),
+    ], child:  ChangeNotifierProvider(
+        create: (context) => ThemeProvider(),
+        child:  MyApp()
+    ))
       );
 
 

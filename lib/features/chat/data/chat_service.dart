@@ -1,19 +1,20 @@
+import "package:chit_chat/features/chat/domain/chat_repos/chat_service_repository.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
+import 'package:rxdart/rxdart.dart';
 import "package:flutter/cupertino.dart";
 
 import "../domain/models/message.dart";
 
-class ChatService extends ChangeNotifier{
+class ChatService implements ChatServiceRepository {
   //get instance of cloud fire store
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-
   //get user stream
 
   /*
-  * List<<Map<String, dynamic>>> = 
+  * List<<Map<String, dynamic>>> =
 
   * [
   * {
@@ -27,146 +28,179 @@ class ChatService extends ChangeNotifier{
   * ]
   *
   * */
- //GET ALL USERS STREAM
-Stream<List<Map<String, dynamic>>> getUsersStream(){
-  return _firestore.collection("Users").snapshots().map((snapshots){
-    return snapshots.docs.map((doc){
-      // go through each individual user
-      final user = doc.data();
 
-      // return user
-      return user;
-    }).toList();
-  });
+  // Future<void> sendMessage(String receiverID, message) async {
+  //   // get current user info
+  //   final String currentUserID = _auth.currentUser!.uid;
+  //   final String? currentUserEmail = _auth.currentUser!.email;
+  //   final Timestamp timestamp = Timestamp.now();
+  //
+  //   //create a new message
+  //   Message newMessage = Message(
+  //       timestamp: timestamp,
+  //       message: message,
+  //       receiverID: receiverID,
+  //       senderEmail: currentUserEmail,
+  //       senderId: currentUserID);
+  //
+  //   // construct chat room ID for the two users (sorted to ensure uniqueness) to store messages
+  //   List<String> ids = [currentUserID, receiverID];
+  //   ids.sort(); // sort the ids (this ensure the chatroomID is the same for any 2 people)
+  //   String chatRoomID = ids.join('_');
+  //   //add new message to database
+  //   await _firestore
+  //       .collection("chat_rooms")
+  //       .doc(chatRoomID)
+  //       .collection("messages")
+  //       .add(newMessage.toMap());
+  // }
 
-}
-//GET ALL USERS STREAM EXCEPT BLOCKED USERS
-  Stream<List<Map<String, dynamic>>> getUsersStreamExcludingBlocked(){
-  final currentUser = _auth.currentUser;
-  if (currentUser == null) {
-    // Return an empty stream if user is not logged in
-    return Stream.value([]);
+
+
+
+
+//UNBLOCK USER
+  @override
+  Future<void> unBlockUser(String blockedUserId) async{
+    final currentUser = _auth.currentUser;
+    await _firestore
+    .collection('Users')
+    .doc(currentUser!.uid)
+    .collection('Blockedusers')
+    .doc(blockedUserId)
+    .delete();
+
   }
-  return _firestore
-      .collection('Users')
-      .doc(currentUser.uid)
-      .collection('BlockedUsers')
-      .snapshots()
-      .asyncMap((snapshot)async {
-    //get blocked user ids
-    final blockedUsersids = snapshot.docs.map((doc) => doc.id).toList();
 
-    //get all users
-    final userSnapshot = await _firestore.collection('Users').get();
+  //BLOCK USER
+ @override
+ Future<void> blockUser(String userId) async {
+    final currentUser = _auth.currentUser;
+    await _firestore
+    .collection("Users")
+    .doc(currentUser!.uid)
+    .collection('BlockedUsers')
+    .doc(userId)
+    .set({});
 
-    //return as a stream list
-    return userSnapshot.docs
-        .where((doc) =>
-    doc.data()['email'] != currentUser.email && !blockedUsersids.contains(doc.id))
-        .map((doc) => doc.data())
-        .toList();
-  });
+ }
 
+  @override
+  Future<void> sendMessage(String receiverId, message) async {
+    // get current user info
+    final String currentUserId = _auth.currentUser!.uid;
+    final String? currentUserEmail = _auth.currentUser!.email;
+    final Timestamp timestamp = Timestamp.now();
+
+    //create a new message
+    Message newMessage = Message(
+        timestamp: timestamp,
+        message: message,
+        receiverID: receiverId,
+        senderEmail: currentUserEmail,
+        senderId: currentUserId);
+
+    // construct chat room ID for the two users (sorted to ensure uniqueness) to store messages
+    List<String> ids = [currentUserId, receiverId];
+    ids.sort(); // sort ensures the ids (this ensure the chatroomID is the same for any 2 people)
+    String chatRoomId = ids.join("_");
+    //add new message to database
+    await _firestore
+        .collection("chat_rooms")
+        .doc(chatRoomId)
+        .collection("messages")
+        .add(newMessage.toMap());
   }
+//REPORT USER
+ @override
+ Future<void> reportUser(String messageId, String userId) async{
+    final currentUser = _auth.currentUser;
+    final report = {
+      'reportedBy': currentUser!.uid,
+      'messageId': messageId,
+      'messageOwnerId': userId,
+      'timeStamp': FieldValue.serverTimestamp()
+    };
 
-
-  // SEND MESSAGE
-Future<void> sendMessage(String receiverID, message) async{
-  // get current user info
-  final String currentUserID = _auth.currentUser!.uid;
-  final String? currentUserEmail = _auth.currentUser!.email;
-  final Timestamp timestamp =  Timestamp.now();
-
-  //create a new message
-  Message newMessage = Message(
-      timestamp: timestamp,
-      message: message,
-      receiverID: receiverID,
-      senderEmail: currentUserEmail,
-      senderID: currentUserID);
-
-  // construct chat room ID for the two users (sorted to ensure uniqueness) to store messages
-  List<String> ids = [currentUserID, receiverID];
-  ids.sort(); // sort the ids (this ensure the chatroomID is the same for any 2 people)
-  String chatRoomID = ids.join('_');
-   //add new message to database
-  await _firestore
-  .collection("chat_rooms")
-  .doc(chatRoomID)
-  .collection("messages")
-  .add(newMessage.toMap());
-
-}
+    await _firestore.collection('Reports').add(report);
+ }
 
   // GET MESSAGE
-Stream<QuerySnapshot> getMessage(String userID, otherUserId){
-  //construct chat room ID for the two users
-  List<String> ids = [userID, otherUserId];
-  ids.sort();
-  String chatRoomID = ids.join('_');
-  return _firestore
-      .collection("chat_rooms")
-      .doc(chatRoomID)
-      .collection("messages")
-      .orderBy("timeStamp", descending: false)
-      .snapshots();
+  @override
+  Stream<QuerySnapshot> getMessage(String userId, otherUserId) {
+    //construct chat room ID for the two users
+    List<String>  ids = [userId, otherUserId];
+    ids.sort();
+    String chatRoomId = ids.join("_");
+    return _firestore
+        .collection("chat_rooms")
+        .doc(chatRoomId)
+        .collection("messages")
+        .orderBy("timeStamp", descending: false)
+        .snapshots();
+  }
 
-}
-
-//REPORT USER
-Future<void> reportUser(String messageId, String userId) async{
-  final currentUser = _auth.currentUser;
-  final report = {
-    'reportedBy': currentUser!.uid,
-    'messageId': messageId,
-    'messageOwnerId': userId,
-    'timeStamp': FieldValue.serverTimestamp()
-  };
-  
-  await _firestore.collection('Reports').add(report);
-}
-//BLOCK USER
-Future<void> blockUser(String userId) async{
-  final currentUser = _auth.currentUser;
-  await _firestore
-  .collection("Users")
-  .doc(currentUser!.uid)
-  .collection('BlockedUsers')
-  .doc(userId)
-  .set({});
-  notifyListeners();
-}
-//UNBLOCK USER
-Future<void> unblockUser(String blockUserId) async{
-  final currentUser = _auth.currentUser;
-
-  await _firestore
-  .collection('Users')
-  .doc(currentUser!.uid)
-  .collection('BlockedUsers')
-  .doc(blockUserId)
-  .delete();
-}
 //GET BLOCKED USER STREAM
-Stream<List<Map<String, dynamic>>> getBlockedUsers(String userId){
-  return _firestore
-      .collection('Users')
-      .doc(userId)
-      .collection('BlockedUsers')
-      .snapshots()
-      .asyncMap((snapshot) async{
-        //get list of blocked user ids
-    final blockedUserIds = snapshot.docs.map((doc) => doc.id).toList();
-    
-    final userDocs = await Future.wait(
-      blockedUserIds
-      .map((id)=> _firestore.collection('Users').doc(id).get()),
+  @override
+  Stream<List<Map<String, dynamic>>> getAllBlockedUsers(String currentUserId) {
+    return _firestore
+        .collection('Users')
+        .doc(currentUserId)
+        .collection('BlockedUsers')
+        .snapshots()
+        .asyncMap((snapshot) async {
+      // get list of blocked user ids
+      final blockedUsersIds = snapshot.docs.map((doc) => doc.id).toList();
+
+      final userDocs = await Future.wait(blockedUsersIds
+          .map((id) => _firestore.collection('Users').doc(id).get()));
+
+      return userDocs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    });
+  }
+
+  //GET ALL USERS STREAM Excluding blocked
+  @override
+  Stream<List<Map<String, dynamic>>> getAllUsersExcludingBlocked() {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) return Stream.value([]);
+
+    // Stream of blocked user IDs
+    final blockedUsersStream = _firestore
+        .collection('Users')
+        .doc(currentUser.uid)
+        .collection('BlockedUsers')
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => doc.id).toList());
+
+    // Stream of all users
+    final allUsersStream = _firestore.collection('Users').snapshots();
+
+    // Combine streams using Rx.combineLatest2
+    return Rx.combineLatest2<List<String>, QuerySnapshot<Map<String, dynamic>>, List<Map<String, dynamic>>>(
+      blockedUsersStream,
+      allUsersStream,
+          (blockedIds, allUsersSnapshot) {
+        return allUsersSnapshot.docs
+            .where((doc) =>
+        doc.data()['email'] != currentUser.email &&
+            !blockedIds.contains(doc.id))
+            .map((doc) => doc.data())
+            .toList();
+      },
     );
+  }
+  //GET ALL USERS STREAM
+  @override
+  Stream<List<Map<String, dynamic>>> getAllUsersStream() {
+    return _firestore.collection("Users").snapshots().map((snapshots) {
+      return snapshots.docs.map((doc) {
+        // go through each individual user
+        final user = doc.data();
 
-    //return as list
-    return userDocs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-  });
+        return user;
+      }).toList();
+    });
+  }
 
-
-}
 }
