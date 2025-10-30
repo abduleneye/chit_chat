@@ -11,14 +11,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../features/chat/presentation/chat_page.dart';
 import '../features/chat/presentation/chat_ui_components/user_tile.dart';
+import '../features/chat/presentation/users_bloc/users_event.dart';
 import 'components/my_drawer.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   //chat and auth services
   final ChatService _chatService = ChatService();
-  //final AuthService _authService = AuthService();
+
+  final AuthService _authService = AuthService();
+
+  @override
+  void initState() {
+    context.read<UsersBloc>().add(GetAllUsersStreamExcludingBlocked());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,30 +94,6 @@ class HomePage extends StatelessWidget {
       },
     );
   }
-
-  //
-
-  //build individual list tile for user
-  // Widget _buildUserListItem(Map<String, dynamic> userData, BuildContext context){
-  //   //display all users except current user
-  //
-  //   //
-  //   // if( _authService.getCurrentUser() != null && userData["email"] != _authService.getCurrentUser()!.email){
-  //   //   return UserTile(
-  //   //     userName: userData["email"],
-  //   //     onTap: (){
-  //   //       Navigator.push(context, MaterialPageRoute(builder: (context)=> ChatPage(receiverEmail: userData["email"], receiverID: userData["uid"],)));
-  //   //     },
-  //   //   );
-  //   // }
-  //   //
-  //   // else{
-  //   //   return Container();
-  //   // }
-  //
-  //
-  //
-  // }
 }
 
 // import 'package:chit_chat/features/auth/data/auth_service.dart';

@@ -161,9 +161,13 @@ class ChatService implements ChatServiceRepository {
 
   //GET ALL USERS STREAM Excluding blocked
   @override
-  Stream<List<Map<String, dynamic>>> getAllUsersExcludingBlocked() {
+  Stream<List<Map<String, dynamic>>> getAllUsersStreamExcludingBlocked() {
     final currentUser = _auth.currentUser;
     if (currentUser == null) return Stream.value([]);
+
+
+    final currentEmail = currentUser.email?.trim().toLowerCase();
+    print("✅ Current logged in email: $currentEmail");
 
     // Stream of blocked user IDs
     final blockedUsersStream = _firestore
@@ -197,10 +201,46 @@ class ChatService implements ChatServiceRepository {
       return snapshots.docs.map((doc) {
         // go through each individual user
         final user = doc.data();
-
         return user;
       }).toList();
     });
   }
+
+
+
+  //GET ALL USERS STREAM Excluding current user
+  @override
+  Stream<List<Map<String, dynamic>>> getAllUsersStreamExcludingCurrentUser () {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) return Stream.value([]);
+
+    final currentEmail = currentUser.email?.trim().toLowerCase();
+    print("✅ Current logged in email: $currentEmail");
+
+    return _firestore.collection("Users").snapshots().map((snapshots) {
+      for (var doc in snapshots.docs) {
+        print("🔥 Firestore email: ${(doc.data()['email'] as String?)?.trim().toLowerCase()}");
+      }
+
+      return snapshots.docs
+          .where((doc) {
+        final userEmail = (doc.data()['email'] as String?)?.trim().toLowerCase();
+        return userEmail != currentEmail;
+      })
+          .map((doc) => doc.data())
+          .toList();
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
 
 }
