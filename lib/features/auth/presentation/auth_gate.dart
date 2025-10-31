@@ -5,14 +5,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../core/home_page.dart';
 import '../../chat/data/chat_service.dart';
+import '../../chat/domain/chat_repos/chat_service_repository.dart';
 import 'auth_bloc/auth_bloc.dart';
 import 'auth_bloc/auth_state.dart';
 import 'login_or_register.dart';
 
 class AuthGate extends StatelessWidget {
-   AuthGate({super.key});
-  final ChatService _chatService = ChatService();
-
+   const AuthGate({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +36,9 @@ class AuthGate extends StatelessWidget {
           if (authState is UserAuthenticated &&
               authState.currentUser != null) {
             return BlocProvider(create: (_)=> UsersBloc(
-                _chatService
+                context.read<ChatService>()
             ),
-              child: HomePage(currentUser: authState.currentUser?.email, chatService: _chatService,
+              child: HomePage(currentUser: authState.currentUser?.email,
               ),
 
             ); //HomePage(currentUser: authState.currentUser?.email,);

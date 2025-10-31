@@ -25,7 +25,7 @@ class SignUpWithEmailAndPassword extends AuthEvent {
       });
 }
 
-class logout extends AuthEvent{
+class Logout extends AuthEvent{
 
 }
 

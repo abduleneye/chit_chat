@@ -10,17 +10,12 @@ import '../../domain/auth_service_repo.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
-    StreamSubscription<User?>? _userSubscription;
-
+  StreamSubscription<User?>? _userSubscription;
   AuthBloc(AuthServiceRepo authRepo): super(AuthInitial())
   {
 
-//    StreamSubscription<User?>? _userSubscription;
-
     _userSubscription = authRepo.user.debounceTime(const Duration(milliseconds: 0)).listen((user){
-
         add(AuthUserChanged(user));
-
 
     });
 
@@ -44,6 +39,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       //  emit(UserAuthenticated(currentUser: userCredential.user));
       } catch(e){
         emit(SignInError(errorMessage: e.toString()));
+
+      }
+    }
+    );
+
+    on<Logout>((event, emit) async{
+      emit(SignInLoading());
+      try{
+        final userCredential =  await authRepo.signOut();
+        //  emit(UserAuthenticated(currentUser: userCredential.user));
+      } catch(e){
+        emit(SignOutError(errorMessage: e.toString()));
 
       }
     }

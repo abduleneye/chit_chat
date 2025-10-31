@@ -38,3 +38,7 @@ class SignUpError extends AuthState {
   final String errorMessage;
   SignUpError({required  this.errorMessage});
 }
+class SignOutError extends AuthState {
+  final String errorMessage;
+  SignOutError({required  this.errorMessage});
+}

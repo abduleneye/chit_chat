@@ -10,8 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../auth/presentation/auth_bloc/auth_bloc.dart';
+import '../../auth/presentation/auth_bloc/auth_state.dart';
 import 'chat_ui_components/chat_bubble.dart';
-
 
 class ChatPage extends StatefulWidget {
   final String receiverEmail;
@@ -26,33 +27,51 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
 
   // chats & auth services
-  final ChatService _chatService = ChatService();
+
   final AuthService _authService = AuthService();
+
 
   // for text field focus
   FocusNode myFocusNode = FocusNode();
-
   @override
   void initState() {
-    context.read<ChatBloc>().add(GetMessage(currentUserID: _authService.getCurrentUser()!.uid, recipientsUserID: widget.receiverID));
+
+    //
+    // context.read<ChatBloc>().add(GetMessage(
+    //     currentUserID: _authService.getCurrentUser()!.uid,
+    //     recipientsUserID: widget.receiverID));
+
+    final authState = context.read<AuthBloc>().state;
+
+    if (authState is UserAuthenticated) {
+      final currentUserId = authState.currentUser?.uid;
+
+      context.read<ChatBloc>().add(
+        GetMessage(
+          currentUserID: currentUserId!,
+          recipientsUserID: widget.receiverID,
+        ),
+      );
+    }
 
     //add listener to focus node
-    myFocusNode.addListener((){
-      if(myFocusNode.hasFocus){
+    myFocusNode.addListener(() {
+      if (myFocusNode.hasFocus) {
         //cause a delay that the keyboard has time to show up
         //then the ammount of remaining space is calculated
         //then scroll down
         Future.delayed(
-          const Duration(milliseconds: 500), ()=> scrollDown(),
+          const Duration(milliseconds: 500),
+          () => scrollDown(),
         );
       }
     });
     // auto scroll on page entered
     Future.delayed(
-      const Duration(milliseconds: 500), ()=> scrollDown(),
+      const Duration(milliseconds: 500),
+      () => scrollDown(),
     );
     super.initState();
-
   }
 
   @override
@@ -64,11 +83,9 @@ class _ChatPageState extends State<ChatPage> {
 
   //scroll controller
   final ScrollController _scrollController = ScrollController();
-  void scrollDown(){
-    _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(seconds: 1),
-        curve: Curves.fastOutSlowIn);
+  void scrollDown() {
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        duration: const Duration(seconds: 1), curve: Curves.fastOutSlowIn);
   }
 
   //send message
@@ -77,7 +94,9 @@ class _ChatPageState extends State<ChatPage> {
       // await _chatService.sendMessage(
       //     widget.receiverID, _messageController.text.toString());
 
-      context.read<ChatBloc>().add(SendMessage(receiverID: widget.receiverID, message: _messageController.text.toString()));
+      context.read<ChatBloc>().add(SendMessage(
+          receiverID: widget.receiverID,
+          message: _messageController.text.toString()));
 
       _messageController.clear();
       scrollDown();
@@ -102,16 +121,15 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageList() {
     String senderID = _authService.getCurrentUser()!.uid;
-    return BlocBuilder<ChatBloc, ChatStates>(builder: (context, chatState){
-      if(chatState is MessagesLoaded){
+    return BlocBuilder<ChatBloc, ChatStates>(builder: (context, chatState) {
+      if (chatState is MessagesLoaded) {
         return ListView(
           controller: _scrollController,
           children: chatState.messages.docs
               .map((doc) => _buildMessageItem(doc))
               .toList(),
         );
-      }
-      else if(chatState is LoadingMessages){
+      } else if (chatState is LoadingMessages) {
         return Center(
           child: Text("Messages Loading"),
         );
@@ -133,7 +151,7 @@ class _ChatPageState extends State<ChatPage> {
         isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
     return Container(
       alignment: alignment,
-     // color: Colors.purple,
+      // color: Colors.purple,
       child: Column(
         crossAxisAlignment:
             isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -156,12 +174,11 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
               child: MyTextfield(
-                  hintText: "Type a message",
-                  isObscured: false,
-                  textEditingController: _messageController,
-                  focusNode: myFocusNode,
-              )
-          ),
+            hintText: "Type a message",
+            isObscured: false,
+            textEditingController: _messageController,
+            focusNode: myFocusNode,
+          )),
           Container(
             margin: EdgeInsets.only(right: 25),
             decoration:

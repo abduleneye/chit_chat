@@ -10,7 +10,6 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
 
    StreamSubscription<QuerySnapshot>? _messageSubscription;
 
-
    ChatBloc(ChatServiceRepository chatRepo): super(LoadingMessages()){
 
 

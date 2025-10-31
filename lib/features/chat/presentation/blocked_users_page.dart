@@ -1,6 +1,4 @@
-import 'package:chit_chat/core/components/my_app_bar.dart';
 import 'package:chit_chat/features/auth/data/auth_service.dart';
-import 'package:chit_chat/features/chat/data/chat_service.dart';
 import 'package:chit_chat/features/chat/presentation/block_users_bloc/block_users_bloc.dart';
 import 'package:chit_chat/features/chat/presentation/block_users_bloc/block_users_event.dart';
 import 'package:chit_chat/features/chat/presentation/block_users_bloc/block_users_state.dart';
@@ -20,8 +18,6 @@ class BlockedUsersPage extends StatefulWidget {
 
 class _BlockedUsersPageState extends State<BlockedUsersPage> {
   //chat and auth services
-  final ChatService _chatService = ChatService();
-
   final AuthService _authService = AuthService();
 
   //show confirm unblock box

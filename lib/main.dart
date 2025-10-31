@@ -1,7 +1,9 @@
 import 'package:chit_chat/core/home_page.dart';
 import 'package:chit_chat/features/auth/data/auth_service.dart';
+import 'package:chit_chat/features/auth/domain/auth_service_repo.dart';
 import 'package:chit_chat/features/auth/presentation/auth_gate.dart';
 import 'package:chit_chat/features/chat/data/chat_service.dart';
+import 'package:chit_chat/features/chat/domain/chat_repos/chat_service_repository.dart';
 import 'package:chit_chat/features/chat/presentation/block_users_bloc/block_users_bloc.dart';
 import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_bloc.dart';
 import 'package:chit_chat/firebase_options.dart';
@@ -28,17 +30,22 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
-    MultiBlocProvider(providers: [
+    MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider(create: (_) => AuthService()),
+          RepositoryProvider(create: (_) => ChatService())
+        ],
+        child: MultiBlocProvider(providers: [
       BlocProvider(
-          create: (context)=> AuthBloc(AuthService()),
+        create: (context)=> AuthBloc(context.read<AuthService>()),
       ),
       BlocProvider(
-        create: (context)=> BlockUsersBloc(ChatService()),
+        create: (context)=> BlockUsersBloc(context.read<ChatService>()),
       ),
     ], child:  ChangeNotifierProvider(
         create: (context) => ThemeProvider(),
         child:  MyApp()
-    ))
+    )))
       );
 
 

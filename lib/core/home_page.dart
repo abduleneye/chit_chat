@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../features/chat/domain/chat_repos/chat_service_repository.dart';
 import '../features/chat/presentation/chat_page.dart';
 import '../features/chat/presentation/chat_ui_components/user_tile.dart';
 import '../features/chat/presentation/users_bloc/users_event.dart';
@@ -16,8 +17,7 @@ import 'components/my_drawer.dart';
 
 class HomePage extends StatefulWidget {
   final String? currentUser;
-  final ChatService chatService;
-  HomePage({super.key, required this.currentUser, required this.chatService});
+  const HomePage({super.key, required this.currentUser,});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => BlocProvider(create: (_)=> ChatBloc(
-                                widget.chatService
+                                  context.read<ChatService>()
                               ),
                                 child: ChatPage(
                                   receiverEmail: userStates.users[index]

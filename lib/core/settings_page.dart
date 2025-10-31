@@ -10,7 +10,6 @@ import '../features/chat/presentation/chat_bloc/chat_bloc.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({super.key});
-  final _chatService = ChatService();
 
   @override
   Widget build(BuildContext context) {

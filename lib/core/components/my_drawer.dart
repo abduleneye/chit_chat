@@ -1,5 +1,9 @@
+import 'package:chit_chat/core/home_page.dart';
+import 'package:chit_chat/features/auth/presentation/auth_bloc/auth_bloc.dart';
+import 'package:chit_chat/features/auth/presentation/auth_bloc/auth_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/auth/data/auth_service.dart';
 import '../../core/settings_page.dart';
@@ -7,12 +11,6 @@ import '../../core/settings_page.dart';
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
 
-  void logout(){
-    //get AuthService
-    final _authService = AuthService();
-    _authService.signOut();
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +66,7 @@ class MyDrawer extends StatelessWidget {
               title: Text("L O G O U T"),
               leading: Icon(Icons.exit_to_app),
               onTap: (){
-                logout();
+                context.read<AuthBloc>().add(Logout());
               },
             ),
           ),
