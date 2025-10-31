@@ -66,7 +66,7 @@ class ChatService implements ChatServiceRepository {
     await _firestore
     .collection('Users')
     .doc(currentUser!.uid)
-    .collection('Blockedusers')
+    .collection('BlockedUsers')
     .doc(blockedUserId)
     .delete();
 

@@ -15,7 +15,9 @@ import '../features/chat/presentation/users_bloc/users_event.dart';
 import 'components/my_drawer.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  final String? currentUser;
+  final ChatService chatService;
+  HomePage({super.key, required this.currentUser, required this.chatService});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -23,9 +25,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   //chat and auth services
-  final ChatService _chatService = ChatService();
-
-  final AuthService _authService = AuthService();
 
   @override
   void initState() {
@@ -65,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => BlocProvider(create: (_)=> ChatBloc(
-                                _chatService
+                                widget.chatService
                               ),
                                 child: ChatPage(
                                   receiverEmail: userStates.users[index]

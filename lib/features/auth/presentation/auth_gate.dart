@@ -1,14 +1,18 @@
+import 'package:chit_chat/features/chat/presentation/users_bloc/users_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../core/home_page.dart';
+import '../../chat/data/chat_service.dart';
 import 'auth_bloc/auth_bloc.dart';
 import 'auth_bloc/auth_state.dart';
 import 'login_or_register.dart';
 
 class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
+   AuthGate({super.key});
+  final ChatService _chatService = ChatService();
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +36,13 @@ class AuthGate extends StatelessWidget {
         builder: (context, authState) {
           if (authState is UserAuthenticated &&
               authState.currentUser != null) {
-            return HomePage();
+            return BlocProvider(create: (_)=> UsersBloc(
+                _chatService
+            ),
+              child: HomePage(currentUser: authState.currentUser?.email, chatService: _chatService,
+              ),
+
+            ); //HomePage(currentUser: authState.currentUser?.email,);
           }
 
           if (authState is UserUnAuthenticated) {

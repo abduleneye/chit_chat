@@ -2,6 +2,7 @@ import 'package:chit_chat/core/home_page.dart';
 import 'package:chit_chat/features/auth/data/auth_service.dart';
 import 'package:chit_chat/features/auth/presentation/auth_gate.dart';
 import 'package:chit_chat/features/chat/data/chat_service.dart';
+import 'package:chit_chat/features/chat/presentation/block_users_bloc/block_users_bloc.dart';
 import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_bloc.dart';
 import 'package:chit_chat/firebase_options.dart';
 import 'package:chit_chat/vtu/dash_board.dart';
@@ -32,7 +33,7 @@ void main() async{
           create: (context)=> AuthBloc(AuthService()),
       ),
       BlocProvider(
-        create: (context)=> UsersBloc(ChatService()),
+        create: (context)=> BlockUsersBloc(ChatService()),
       ),
     ], child:  ChangeNotifierProvider(
         create: (context) => ThemeProvider(),

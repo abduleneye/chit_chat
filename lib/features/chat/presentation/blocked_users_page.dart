@@ -1,16 +1,29 @@
 import 'package:chit_chat/core/components/my_app_bar.dart';
 import 'package:chit_chat/features/auth/data/auth_service.dart';
 import 'package:chit_chat/features/chat/data/chat_service.dart';
+import 'package:chit_chat/features/chat/presentation/block_users_bloc/block_users_bloc.dart';
+import 'package:chit_chat/features/chat/presentation/block_users_bloc/block_users_event.dart';
+import 'package:chit_chat/features/chat/presentation/block_users_bloc/block_users_state.dart';
 import 'package:chit_chat/features/chat/presentation/chat_ui_components/user_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BlockedUsersPage extends StatelessWidget {
+import 'chat_bloc/chat_bloc.dart';
+
+class BlockedUsersPage extends StatefulWidget {
    BlockedUsersPage({super.key});
 
+  @override
+  State<BlockedUsersPage> createState() => _BlockedUsersPageState();
+}
+
+class _BlockedUsersPageState extends State<BlockedUsersPage> {
   //chat and auth services
   final ChatService _chatService = ChatService();
+
   final AuthService _authService = AuthService();
+
   //show confirm unblock box
    void _showUnblockDialog(BuildContext context, String userId) {
      showDialog(
@@ -25,7 +38,7 @@ class BlockedUsersPage extends StatelessWidget {
                  child: Text("Cancel")
              ),
              TextButton(onPressed: (){
-               _chatService.unBlockUser(userId);
+               context.read<BlockUsersBloc>().add(UnBlockUser(userToBeUnBlockedId: userId));
                Navigator.pop(context);
                ScaffoldMessenger.of(context).showSnackBar(
                  SnackBar(content: Text("User Unblocked"))
@@ -38,8 +51,11 @@ class BlockedUsersPage extends StatelessWidget {
          )
      );
    }
-
-
+@override
+  void initState() {
+  context.read<BlockUsersBloc>().add(LoadBlockedUsers(forUserId: _authService.getCurrentUser()!.uid));
+    super.initState();
+  }
    @override
   Widget build(BuildContext context) {
     String userId = _authService.getCurrentUser()!.uid;
@@ -50,36 +66,29 @@ class BlockedUsersPage extends StatelessWidget {
         foregroundColor: Colors.grey,
         elevation: 0,
       ),
-      body: StreamBuilder<List<Map<String, dynamic>>>(
-          stream: _chatService.getAllBlockedUsers(userId),
-          builder: (context, snapshot){
-            //errors
-            if(snapshot.hasError){
-              return Center(child: Text("An Error occured"),);
-            }
-            //loading
-            if(snapshot.connectionState == ConnectionState.waiting){
-              return Center(child: CircularProgressIndicator(),);
-            }
+      body: BlocBuilder<BlockUsersBloc, BlockUsersState>(builder: (context, state){
+        if(state is Loading){
+          return Center(child: CircularProgressIndicator(),);
 
-            final blockedUsers = snapshot.data ?? [];
+        }else if (state is Loaded){
+          if(state.blockedUsers.isEmpty){
+            return Center(child: Text("No blocked user"),);
 
-            //no user
-            if(blockedUsers.isEmpty){
-              return Center(child: Text("No blocked user"),);
-            }
-            
-            // load complete
+          } else{
             return ListView.builder(
-              itemCount: blockedUsers.length,
+                itemCount: state.blockedUsers.length,
                 itemBuilder: (context, index){
-              final user = blockedUsers[index];
-              return UserTile(userName: user["email"],
-                onTap: () => _showUnblockDialog(context, user['uid']),);
-            });
-          }
-      ),
+                  final user = state.blockedUsers[index];
+                  return UserTile(userName: user["email"],
+                    onTap: () => _showUnblockDialog(context, user['uid']),);
+                });
 
+          }
+        }
+
+        return Center(child: Text("An Error occured"),);
+
+      })
     );
   }
 }

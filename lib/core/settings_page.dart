@@ -1,12 +1,16 @@
 import 'package:chit_chat/core/themes/theme_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import '../features/chat/data/chat_service.dart';
 import '../features/chat/presentation/blocked_users_page.dart';
+import '../features/chat/presentation/chat_bloc/chat_bloc.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+  SettingsPage({super.key});
+  final _chatService = ChatService();
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +65,9 @@ class SettingsPage extends StatelessWidget {
                           IconButton(onPressed: (){
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context)=> BlockedUsersPage())
+                                MaterialPageRoute(
+                                    builder: (context) =>BlockedUsersPage()
+                                )
                             );
                           },
                               icon: Icon(Icons.arrow_forward),
