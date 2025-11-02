@@ -56,35 +56,29 @@ class ChatService implements ChatServiceRepository {
   //       .add(newMessage.toMap());
   // }
 
-
-
-
-
 //UNBLOCK USER
   @override
-  Future<void> unBlockUser(String blockedUserId) async{
+  Future<void> unBlockUser(String blockedUserId) async {
     final currentUser = _auth.currentUser;
     await _firestore
-    .collection('Users')
-    .doc(currentUser!.uid)
-    .collection('BlockedUsers')
-    .doc(blockedUserId)
-    .delete();
-
+        .collection('Users')
+        .doc(currentUser!.uid)
+        .collection('BlockedUsers')
+        .doc(blockedUserId)
+        .delete();
   }
 
   //BLOCK USER
- @override
- Future<void> blockUser(String userId) async {
+  @override
+  Future<void> blockUser(String userId) async {
     final currentUser = _auth.currentUser;
     await _firestore
-    .collection("Users")
-    .doc(currentUser!.uid)
-    .collection('BlockedUsers')
-    .doc(userId)
-    .set({});
-
- }
+        .collection("Users")
+        .doc(currentUser!.uid)
+        .collection('BlockedUsers')
+        .doc(userId)
+        .set({});
+  }
 
   @override
   Future<void> sendMessage(String receiverId, message) async {
@@ -92,6 +86,8 @@ class ChatService implements ChatServiceRepository {
     final String currentUserId = _auth.currentUser!.uid;
     final String? currentUserEmail = _auth.currentUser!.email;
     final Timestamp timestamp = Timestamp.now();
+    final bool messageEdited = false;
+    final bool messageDeleted = false;
 
     //create a new message
     Message newMessage = Message(
@@ -99,7 +95,9 @@ class ChatService implements ChatServiceRepository {
         message: message,
         receiverID: receiverId,
         senderEmail: currentUserEmail,
-        senderId: currentUserId);
+        senderId: currentUserId,
+        messageDeleted: messageEdited,
+        messageEdited: false);
 
     // construct chat room ID for the two users (sorted to ensure uniqueness) to store messages
     List<String> ids = [currentUserId, receiverId];
@@ -112,9 +110,10 @@ class ChatService implements ChatServiceRepository {
         .collection("messages")
         .add(newMessage.toMap());
   }
+
 //REPORT USER
- @override
- Future<void> reportUser(String messageId, String userId) async{
+  @override
+  Future<void> reportUser(String messageId, String userId) async {
     final currentUser = _auth.currentUser;
     final report = {
       'reportedBy': currentUser!.uid,
@@ -124,13 +123,13 @@ class ChatService implements ChatServiceRepository {
     };
 
     await _firestore.collection('Reports').add(report);
- }
+  }
 
   // GET MESSAGE
   @override
   Stream<List<Map<String, dynamic>>> getMessage(String userId, otherUserId) {
     //construct chat room ID for the two users
-    List<String>  ids = [userId, otherUserId];
+    List<String> ids = [userId, otherUserId];
     ids.sort();
     String chatRoomId = ids.join("_");
     return _firestore
@@ -138,13 +137,12 @@ class ChatService implements ChatServiceRepository {
         .doc(chatRoomId)
         .collection("messages")
         .orderBy("timeStamp", descending: false)
-        .snapshots().map(
-            (querySnapshot) => querySnapshot.docs.map((doc){
+        .snapshots()
+        .map((querySnapshot) => querySnapshot.docs.map((doc) {
               final map = doc.data() as Map<String, dynamic>;
               map['messageId'] = doc.id; // attaching the id for future use
               return map;
-            }).toList()
-    );
+            }).toList());
   }
 
 //GET BLOCKED USER STREAM
@@ -172,7 +170,6 @@ class ChatService implements ChatServiceRepository {
     final currentUser = _auth.currentUser;
     if (currentUser == null) return Stream.value([]);
 
-
     final currentEmail = currentUser.email?.trim().toLowerCase();
     print("✅ Current logged in email: $currentEmail");
 
@@ -188,19 +185,21 @@ class ChatService implements ChatServiceRepository {
     final allUsersStream = _firestore.collection('Users').snapshots();
 
     // Combine streams using Rx.combineLatest2
-    return Rx.combineLatest2<List<String>, QuerySnapshot<Map<String, dynamic>>, List<Map<String, dynamic>>>(
+    return Rx.combineLatest2<List<String>, QuerySnapshot<Map<String, dynamic>>,
+        List<Map<String, dynamic>>>(
       blockedUsersStream,
       allUsersStream,
-          (blockedIds, allUsersSnapshot) {
+      (blockedIds, allUsersSnapshot) {
         return allUsersSnapshot.docs
             .where((doc) =>
-        doc.data()['email'] != currentUser.email &&
-            !blockedIds.contains(doc.id))
+                doc.data()['email'] != currentUser.email &&
+                !blockedIds.contains(doc.id))
             .map((doc) => doc.data())
             .toList();
       },
     );
   }
+
   //GET ALL USERS STREAM
   @override
   Stream<List<Map<String, dynamic>>> getAllUsersStream() {
@@ -213,11 +212,9 @@ class ChatService implements ChatServiceRepository {
     });
   }
 
-
-
   //GET ALL USERS STREAM Excluding current user
   @override
-  Stream<List<Map<String, dynamic>>> getAllUsersStreamExcludingCurrentUser () {
+  Stream<List<Map<String, dynamic>>> getAllUsersStreamExcludingCurrentUser() {
     final currentUser = _auth.currentUser;
     if (currentUser == null) return Stream.value([]);
 
@@ -226,14 +223,16 @@ class ChatService implements ChatServiceRepository {
 
     return _firestore.collection("Users").snapshots().map((snapshots) {
       for (var doc in snapshots.docs) {
-        print("🔥 Firestore email: ${(doc.data()['email'] as String?)?.trim().toLowerCase()}");
+        print(
+            "🔥 Firestore email: ${(doc.data()['email'] as String?)?.trim().toLowerCase()}");
       }
 
       return snapshots.docs
           .where((doc) {
-        final userEmail = (doc.data()['email'] as String?)?.trim().toLowerCase();
-        return userEmail != currentEmail;
-      })
+            final userEmail =
+                (doc.data()['email'] as String?)?.trim().toLowerCase();
+            return userEmail != currentEmail;
+          })
           .map((doc) => doc.data())
           .toList();
     });
@@ -287,7 +286,7 @@ class ChatService implements ChatServiceRepository {
 
       final docSnap = await docRef.get();
       if (docSnap.exists) {
-        await docRef.delete();
+        await docRef.update({'messageDeleted': true});
         print("Message deleted successfully ✅");
       } else {
         print("Message not found ❌");
@@ -297,10 +296,9 @@ class ChatService implements ChatServiceRepository {
     }
   }
 
-
   @override
-  Future<void> editMessage(String messageId, String receiverId, String newMessage) async{
-
+  Future<void> editMessage(
+      String messageId, String receiverId, String newMessage) async {
     print("In delete1");
 
     final String currentUserId = _auth.currentUser!.uid;
@@ -314,12 +312,11 @@ class ChatService implements ChatServiceRepository {
           .collection("chat_rooms")
           .doc(chatRoomId)
           .collection("messages")
-          .doc(messageId)
-      ;
+          .doc(messageId);
 
       final docSnap = await docRef.get();
       if (docSnap.exists) {
-        await docRef.update({'message': newMessage});
+        await docRef.update({'message': newMessage, 'messageEdited': true});
         print("Message deleted successfully ✅");
       } else {
         print("Message not found ❌");
@@ -327,20 +324,6 @@ class ChatService implements ChatServiceRepository {
     } catch (e) {
       print("Firestore delete error: $e");
     }
-       // .update({'isRead': true})
+    // .update({'isRead': true})
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

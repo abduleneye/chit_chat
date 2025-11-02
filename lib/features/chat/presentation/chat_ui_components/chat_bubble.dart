@@ -19,9 +19,13 @@ class ChatBubble extends StatefulWidget {
   final String userId;
   final String receiverId;
   final String timeStamp;
+  final bool messageDeleted;
+  final bool messageEdited;
   const ChatBubble({
     super.key,
     // this.loggedInUser,
+    required this.messageEdited,
+    required this.messageDeleted,
     required this.message,
     required this.isCurrentUser,
     required this.messageId,
@@ -41,15 +45,11 @@ class _ChatBubbleState extends State<ChatBubble> {
   void initState() {
     super.initState();
 
-    _textEditingController =
-    TextEditingController(text: widget.message);
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      Future.delayed(
-        Duration(milliseconds: 1000), (){
+    _textEditingController = TextEditingController(text: widget.message);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(Duration(milliseconds: 1000), () {
         _focusNode.requestFocus();
-
-      }
-      );
+      });
     });
   }
 
@@ -207,25 +207,20 @@ class _ChatBubbleState extends State<ChatBubble> {
   }
 
   void _editMessage(BuildContext context, String receiverId, String messageId) {
-
-
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         builder: (context) {
           return SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(
               children: [
                 ListTile(
                   leading: Icon(Icons.edit),
                   title: Text("Edit Message"),
-                  titleTextStyle: TextStyle(
-                      fontSize: 24,
-                      color: Colors.black
-                  ),
-                  onTap: () {
-                  },
+                  titleTextStyle: TextStyle(fontSize: 24, color: Colors.black),
+                  onTap: () {},
                 ),
                 // delete message button
                 Text("Are you sure you want to edit this message?"),
@@ -234,7 +229,7 @@ class _ChatBubbleState extends State<ChatBubble> {
                 ),
 
                 MyTextfield(
-                  //focusNode: _focusNode,
+                    //focusNode: _focusNode,
                     makeAutoFocus: true,
                     hintText: "",
                     isObscured: false,
@@ -246,19 +241,19 @@ class _ChatBubbleState extends State<ChatBubble> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(onPressed: (){
-                      Navigator.pop(context);
-                    },
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                         child: Text("Cancel")),
-
-                    TextButton(onPressed: (){
-                      context.read<ChatBloc>().add(EditMessage(
-                          receiverId: receiverId,
-                          messageId: messageId,
-                          newMessage: _textEditingController.text));
-                      Navigator.pop(context);
-
-                    },
+                    TextButton(
+                        onPressed: () {
+                          context.read<ChatBloc>().add(EditMessage(
+                              receiverId: receiverId,
+                              messageId: messageId,
+                              newMessage: _textEditingController.text));
+                          Navigator.pop(context);
+                        },
                         child: Text("Done"))
                   ],
                 )
@@ -368,8 +363,12 @@ class _ChatBubbleState extends State<ChatBubble> {
           _showChatSecurityOptions(context, widget.messageId, widget.userId);
         }
         if (widget.isCurrentUser) {
-          //show options
-          _showChatModificationOptions(context, widget.messageId, widget.receiverId);
+          if(!widget.messageDeleted){
+            //show options
+            _showChatModificationOptions(
+                context, widget.messageId, widget.receiverId);
+          }
+
         }
       },
       child: Container(
@@ -384,8 +383,9 @@ class _ChatBubbleState extends State<ChatBubble> {
                 bottomLeft: widget.isCurrentUser
                     ? const Radius.circular(12)
                     : const Radius.circular(0),
-                bottomRight:
-                    widget.isCurrentUser ? Radius.circular(0) : Radius.circular(12))),
+                bottomRight: widget.isCurrentUser
+                    ? Radius.circular(0)
+                    : Radius.circular(12))),
         padding: EdgeInsets.all(10),
         margin: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
         child: Column(
@@ -393,7 +393,11 @@ class _ChatBubbleState extends State<ChatBubble> {
           children: [
             Text(
               // textAlign: TextAlign.start,
-              widget.message,
+              widget.messageDeleted && widget.isCurrentUser
+                  ? "You deleted this message"
+                  : widget.messageDeleted && !widget.isCurrentUser
+                      ? "Message Deleted"
+                      : widget.message,
               style: TextStyle(
                   color: widget.isCurrentUser
                       ? Colors.white
@@ -402,12 +406,18 @@ class _ChatBubbleState extends State<ChatBubble> {
             SizedBox(
               height: 5,
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                widget.timeStamp,
-                style: TextStyle(fontSize: 12, color: Color(0xFF344433)),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  widget.messageEdited ? "Edited" : widget.messageDeleted ? " " : " ",
+                  style: TextStyle(fontSize: 12, color: Color(0xFF344433)),
+                ),
+                Text(
+                  widget.timeStamp,
+                  style: TextStyle(fontSize: 12, color: Color(0xFF344433)),
+                )
+              ],
             )
           ],
         ),

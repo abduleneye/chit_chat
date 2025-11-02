@@ -175,6 +175,9 @@ class _ChatPageState extends State<ChatPage> {
             userId: messages[index]["senderID"],
             timeStamp: formattedTime,
             receiverId: messages[index]["receiverID"],
+            messageDeleted: messages[index]["messageDeleted"],
+              messageEdited: messages[index]["messageEdited"]
+
           )
 
         ],
