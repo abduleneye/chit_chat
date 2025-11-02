@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class MyTextfield extends StatelessWidget {
   final bool isEnabled;
+  final bool makeAutoFocus;
   final String hintText;
   final bool isObscured;
   final TextEditingController textEditingController;
@@ -13,13 +14,14 @@ class MyTextfield extends StatelessWidget {
       required this.hintText,
       required this.isObscured,
       required this.textEditingController,
-      this.focusNode});
+      this.focusNode,  this.makeAutoFocus = false});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(
+        autofocus: makeAutoFocus,
         enabled: isEnabled,
         controller: textEditingController,
         obscureText: isObscured,

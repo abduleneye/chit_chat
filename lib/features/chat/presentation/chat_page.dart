@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../auth/presentation/auth_bloc/auth_bloc.dart';
@@ -114,7 +115,10 @@ class _ChatPageState extends State<ChatPage> {
         elevation: 0,
       ),
       body: Column(
-        children: [Expanded(child: _buildMessageList()), _buildUserInput()],
+        children: [
+          Expanded(child: _buildMessageList()),
+          SizedBox(height: 3,),
+          _buildUserInput()],
       ),
     );
   }
@@ -123,12 +127,16 @@ class _ChatPageState extends State<ChatPage> {
     String senderID = _authService.getCurrentUser()!.uid;
     return BlocBuilder<ChatBloc, ChatStates>(builder: (context, chatState) {
       if (chatState is MessagesLoaded) {
-        return ListView(
+        //_buildMessageItem(doc)
+        return ListView.builder(
           controller: _scrollController,
-          children: chatState.messages.docs
-              .map((doc) => _buildMessageItem(doc))
-              .toList(),
-        );
+            shrinkWrap: true,
+           // physics: NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.symmetric(vertical: 0),
+            itemCount: chatState.messages.length,
+            itemBuilder: (context, index) {
+              return _buildMessageItem(messages: chatState.messages, index: index);
+            });
       } else if (chatState is LoadingMessages) {
         return Center(
           child: Text("Messages Loading"),
@@ -141,14 +149,18 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  Widget _buildMessageItem(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  Widget _buildMessageItem({ required List<Map<String, dynamic>> messages, required int index}) {
+   // Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
     // is current user
-    bool isCurrentUser = data['senderID'] == _authService.getCurrentUser()!.uid;
+    bool isCurrentUser = messages[index]['senderID'] == _authService.getCurrentUser()!.uid;
     // align message to the right if sender is current user
     var alignment =
         isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
+
+    Timestamp timestamp = messages[index]["timeStamp"];
+    DateTime dateTime = timestamp.toDate();
+    String formattedTime = DateFormat('h:mma').format(dateTime);
     return Container(
       alignment: alignment,
       // color: Colors.purple,
@@ -157,11 +169,14 @@ class _ChatPageState extends State<ChatPage> {
             isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           ChatBubble(
-            message: data["message"],
+            message: messages[index]["message"],
             isCurrentUser: isCurrentUser,
-            messageId: doc.id,
-            userId: data["senderID"],
+            messageId: messages[index]['messageId'],
+            userId: messages[index]["senderID"],
+            timeStamp: formattedTime,
+            receiverId: messages[index]["receiverID"],
           )
+
         ],
       ),
     );
@@ -186,6 +201,7 @@ class _ChatPageState extends State<ChatPage> {
             child: IconButton(
                 onPressed: () {
                   sendMessage();
+                  FocusScope.of(context).unfocus();
                 },
                 icon: Icon(
                   Icons.send,

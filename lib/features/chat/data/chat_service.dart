@@ -1,6 +1,7 @@
 import "package:chit_chat/features/chat/domain/chat_repos/chat_service_repository.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
+import "package:fluttertoast/fluttertoast.dart";
 import 'package:rxdart/rxdart.dart';
 import "package:flutter/cupertino.dart";
 
@@ -127,7 +128,7 @@ class ChatService implements ChatServiceRepository {
 
   // GET MESSAGE
   @override
-  Stream<QuerySnapshot> getMessage(String userId, otherUserId) {
+  Stream<List<Map<String, dynamic>>> getMessage(String userId, otherUserId) {
     //construct chat room ID for the two users
     List<String>  ids = [userId, otherUserId];
     ids.sort();
@@ -137,7 +138,13 @@ class ChatService implements ChatServiceRepository {
         .doc(chatRoomId)
         .collection("messages")
         .orderBy("timeStamp", descending: false)
-        .snapshots();
+        .snapshots().map(
+            (querySnapshot) => querySnapshot.docs.map((doc){
+              final map = doc.data() as Map<String, dynamic>;
+              map['messageId'] = doc.id; // attaching the id for future use
+              return map;
+            }).toList()
+    );
   }
 
 //GET BLOCKED USER STREAM
@@ -231,6 +238,99 @@ class ChatService implements ChatServiceRepository {
           .toList();
     });
   }
+
+  // @override
+  // Future<void> deleteMessage(String messageId, String receiverId) async {
+  //   print("In delete1");
+  //
+  //   // get current user info
+  //   final String currentUserId = _auth.currentUser!.uid;
+  //
+  //
+  //   // construct chat room ID for the two users (sorted to ensure uniqueness) to store messages
+  //   List<String> ids = [currentUserId, receiverId];
+  //   ids.sort(); // sort ensures the ids (this ensure the chatroomID is the same for any 2 people)
+  //   String chatRoomId = ids.join("_");
+  //   //add new message to database
+  //   try{
+  //     print("In delete mess ID${messageId} and rec ID${receiverId}");
+  //
+  //     await _firestore
+  //         .collection("chat_rooms")
+  //         .doc(chatRoomId)
+  //         .collection("messages")
+  //         .doc(messageId)
+  //         .delete();
+  //
+  //   } catch (e) {
+  //     print("Firestore delete  error: $e");
+  //   }
+  //
+  // }
+
+  @override
+  Future<void> deleteMessage(String messageId, String receiverId) async {
+    print("In delete1");
+
+    final String currentUserId = _auth.currentUser!.uid;
+    List<String> ids = [currentUserId, receiverId];
+    ids.sort();
+    String chatRoomId = ids.join("_");
+
+    try {
+      print("In delete mess ID: $messageId and rec ID: $receiverId");
+      final docRef = _firestore
+          .collection("chat_rooms")
+          .doc(chatRoomId)
+          .collection("messages")
+          .doc(messageId);
+
+      final docSnap = await docRef.get();
+      if (docSnap.exists) {
+        await docRef.delete();
+        print("Message deleted successfully ✅");
+      } else {
+        print("Message not found ❌");
+      }
+    } catch (e) {
+      print("Firestore delete error: $e");
+    }
+  }
+
+
+  @override
+  Future<void> editMessage(String messageId, String receiverId, String newMessage) async{
+
+    print("In delete1");
+
+    final String currentUserId = _auth.currentUser!.uid;
+    List<String> ids = [currentUserId, receiverId];
+    ids.sort();
+    String chatRoomId = ids.join("_");
+
+    try {
+      print("In delete mess ID: $messageId and rec ID: $receiverId");
+      final docRef = _firestore
+          .collection("chat_rooms")
+          .doc(chatRoomId)
+          .collection("messages")
+          .doc(messageId)
+      ;
+
+      final docSnap = await docRef.get();
+      if (docSnap.exists) {
+        await docRef.update({'message': newMessage});
+        print("Message deleted successfully ✅");
+      } else {
+        print("Message not found ❌");
+      }
+    } catch (e) {
+      print("Firestore delete error: $e");
+    }
+       // .update({'isRead': true})
+  }
+
+
 
 
 

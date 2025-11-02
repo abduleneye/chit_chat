@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatBloc extends Bloc<ChatEvents, ChatStates> {
 
-   StreamSubscription<QuerySnapshot>? _messageSubscription;
+   StreamSubscription<List<Map<String, dynamic>>>? _messageSubscription;
 
    ChatBloc(ChatServiceRepository chatRepo): super(LoadingMessages()){
 
@@ -17,10 +17,19 @@ class ChatBloc extends Bloc<ChatEvents, ChatStates> {
        await chatRepo.sendMessage(event.receiverID, event.message);
     });
 
+    on<DeleteMessage>((event, emit) async {
+      await chatRepo.deleteMessage(event.messageId, event.receiverId);
+    });
+
+    on<EditMessage>((event, emit) async {
+      await chatRepo.editMessage(event.messageId, event.receiverId, event.newMessage);
+    });
+
+
     on<GetMessage>((event, emit) async{
       _messageSubscription = chatRepo.getMessage(event.currentUserID, event.recipientsUserID).listen(
               (messages){
-                print("Stream emitted: ${messages.docs.length} messages");
+                print("Stream emitted: ${messages.toList()} messages");
                 add(MessageReceived(message: messages));
       },
         onError: (error) {

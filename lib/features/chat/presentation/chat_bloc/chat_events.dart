@@ -13,6 +13,17 @@ class SendMessage extends ChatEvents {
   final String message;
   SendMessage({required this.receiverID, required this.message});
 }
+class EditMessage extends ChatEvents {
+  final String receiverId;
+  final String messageId;
+  final String newMessage;
+  EditMessage(  {required this.receiverId, required this.messageId, required this.newMessage,});
+}
+class DeleteMessage extends ChatEvents {
+  final String receiverId;
+  final String messageId;
+  DeleteMessage({required this.receiverId, required this.messageId});
+}
 
 class GetMessage extends ChatEvents {
   final String currentUserID;
@@ -21,7 +32,7 @@ class GetMessage extends ChatEvents {
 }
 
 class MessageReceived extends ChatEvents {
-  final QuerySnapshot message;
+  final List<Map<String, dynamic>> message;
   MessageReceived({required this.message});
 }
 
@@ -33,15 +44,15 @@ class ReportUser extends ChatEvents{
 
 }
 
-class BlockUser extends ChatEvents{
-  final String userID;
-  BlockUser({required this.userID,
-    });
-}
+// class BlockUser extends ChatEvents{
+//   final String userID;
+//   BlockUser({required this.userID,
+//     });
+// }
 
-class UnblockUser extends ChatEvents {
-  final String userID;
-
-  UnblockUser({required this.userID,
-  });
-}
+// class UnblockUser extends ChatEvents {
+//   final String userID;
+//
+//   UnblockUser({required this.userID,
+//   });
+// }

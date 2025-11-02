@@ -42,6 +42,9 @@ void main() async{
       BlocProvider(
         create: (context)=> BlockUsersBloc(context.read<ChatService>()),
       ),
+          BlocProvider(
+            create: (context)=> ChatBloc(context.read<ChatService>()),
+          )
     ], child:  ChangeNotifierProvider(
         create: (context) => ThemeProvider(),
         child:  MyApp()

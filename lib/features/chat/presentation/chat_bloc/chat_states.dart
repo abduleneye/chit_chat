@@ -8,6 +8,6 @@ class ChatInitial extends ChatStates{
 class LoadingMessages extends ChatStates{
 }
 class MessagesLoaded extends ChatStates{
-  final QuerySnapshot messages;
+  final List<Map<String, dynamic>> messages;
   MessagesLoaded({required this.messages});
 }
