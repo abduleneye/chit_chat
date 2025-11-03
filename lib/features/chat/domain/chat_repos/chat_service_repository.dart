@@ -12,7 +12,8 @@ abstract class ChatServiceRepository{
   Future<void> blockUser(String userId);
   Future<void> unBlockUser(String blockedUserId);
   Future<void> editMessage(String messageId, String receiverId, String newMessage);
-  Future<void> deleteMessage(String messageId, String receiverId,);
+  Future<void> deleteMessage(String messageId, String receiverId);
+  Future<void> updateUserInfo(Map<String, dynamic> userInfo);
 
 
 }

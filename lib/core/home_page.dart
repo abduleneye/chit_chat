@@ -13,25 +13,46 @@ import '../features/chat/domain/chat_repos/chat_service_repository.dart';
 import '../features/chat/presentation/chat_page.dart';
 import '../features/chat/presentation/chat_ui_components/user_tile.dart';
 import '../features/chat/presentation/users_bloc/users_event.dart';
+import '../features/ephemerals/data/presence_service.dart';
 import 'components/my_drawer.dart';
 
 class HomePage extends StatefulWidget {
   final String? currentUser;
-  const HomePage({super.key, required this.currentUser,});
+  const HomePage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   //chat and auth services
+  final presence = PresenceService();
 
   @override
   void initState() {
+
+    WidgetsBinding.instance.addObserver(this);
+    presence.initPresence();
     context.read<UsersBloc>().add(GetAllUsersStreamExcludingBlocked());
+
+
+    // context
+    //     .read<UsersBloc>()
+    //     .add(UpdateUserInfo(userInfo: {'isOnline': true}));
+
     super.initState();
   }
 
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+   // context.read<UsersBloc>().add(UpdateUserInfo(userInfo: {'isOnline': false}));
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,24 +78,32 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.symmetric(vertical: 0),
                 itemCount: userStates.users.length,
                 itemBuilder: (context, index) {
-                  return UserTile(
-                    userName: userStates.users[index]["email"],
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BlocProvider(create: (_)=> ChatBloc(
-                                  context.read<ChatService>()
-                              ),
-                                child: ChatPage(
-                                  receiverEmail: userStates.users[index]
-                                  ["email"],
-                                  receiverID: userStates.users[index]["uid"],
-                                ),
-
-                              )
-                          ));
-                    },
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      UserTile(
+                        isOnline: userStates.users[index]["isOnline"],
+                        userName: userStates.users[index]["email"],
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BlocProvider(
+                                    create: (_) =>
+                                        ChatBloc(context.read<ChatService>()),
+                                    child: ChatPage(
+                                      receiverEmail: userStates.users[index]
+                                      ["email"],
+                                      receiverID: userStates.users[index]
+                                      ["uid"],
+                                      // isOnline: null,
+                                      // isTyping: null,
+                                    ),
+                                  )));
+                        }, otherUserId:userStates.users[index]
+                      ["uid"] ,
+                      )
+                    ],
                   );
                 });
           } else {

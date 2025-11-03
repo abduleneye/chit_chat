@@ -13,12 +13,21 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../auth/presentation/auth_bloc/auth_bloc.dart';
 import '../../auth/presentation/auth_bloc/auth_state.dart';
+import '../../ephemerals/data/presence_service.dart';
 import 'chat_ui_components/chat_bubble.dart';
 
 class ChatPage extends StatefulWidget {
+  // final bool isOnline;
+  // final bool isTyping;
   final String receiverEmail;
   final String receiverID;
-  ChatPage({super.key, required this.receiverEmail, required this.receiverID});
+  const ChatPage(
+      {super.key,
+      required this.receiverEmail,
+      required this.receiverID,
+      // required this.isOnline,
+      // required this.isTyping
+      });
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -31,12 +40,10 @@ class _ChatPageState extends State<ChatPage> {
 
   final AuthService _authService = AuthService();
 
-
   // for text field focus
   FocusNode myFocusNode = FocusNode();
   @override
   void initState() {
-
     //
     // context.read<ChatBloc>().add(GetMessage(
     //     currentUserID: _authService.getCurrentUser()!.uid,
@@ -48,11 +55,11 @@ class _ChatPageState extends State<ChatPage> {
       final currentUserId = authState.currentUser?.uid;
 
       context.read<ChatBloc>().add(
-        GetMessage(
-          currentUserID: currentUserId!,
-          recipientsUserID: widget.receiverID,
-        ),
-      );
+            GetMessage(
+              currentUserID: currentUserId!,
+              recipientsUserID: widget.receiverID,
+            ),
+          );
     }
 
     //add listener to focus node
@@ -109,7 +116,48 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.receiverEmail),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(widget.receiverEmail, style: TextStyle(fontSize: 24)),
+            StreamBuilder(
+              stream: PresenceService().getUserStatus(widget.receiverID),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const Text(
+                    "Offline",
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.red
+                  ),
+                );
+
+                final data = snapshot.data!;
+                final isOnline = data["isOnline"] ?? false;
+
+                if (isOnline) {
+                  return const Text("Online",
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.green
+                      ));
+                } else {
+
+                  final lastSeen = DateTime.fromMillisecondsSinceEpoch(data["lastSeen"]);
+                  final formatted = DateFormat('EEEE HH:mm').format(lastSeen.toLocal());
+
+                  return Text(
+                    "Last seen on:  $formatted",
+                    style: TextStyle(
+                        fontSize: 12,
+                      color: Colors.black
+                    ),
+                  );
+
+                }
+              },
+            ),
+          ],
+        ),
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.grey,
         elevation: 0,
@@ -117,8 +165,11 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           Expanded(child: _buildMessageList()),
-          SizedBox(height: 3,),
-          _buildUserInput()],
+          SizedBox(
+            height: 3,
+          ),
+          _buildUserInput()
+        ],
       ),
     );
   }
@@ -129,13 +180,14 @@ class _ChatPageState extends State<ChatPage> {
       if (chatState is MessagesLoaded) {
         //_buildMessageItem(doc)
         return ListView.builder(
-          controller: _scrollController,
+            controller: _scrollController,
             shrinkWrap: true,
-           // physics: NeverScrollableScrollPhysics(),
+            // physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.symmetric(vertical: 0),
             itemCount: chatState.messages.length,
             itemBuilder: (context, index) {
-              return _buildMessageItem(messages: chatState.messages, index: index);
+              return _buildMessageItem(
+                  messages: chatState.messages, index: index);
             });
       } else if (chatState is LoadingMessages) {
         return Center(
@@ -149,11 +201,13 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  Widget _buildMessageItem({ required List<Map<String, dynamic>> messages, required int index}) {
-   // Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  Widget _buildMessageItem(
+      {required List<Map<String, dynamic>> messages, required int index}) {
+    // Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
     // is current user
-    bool isCurrentUser = messages[index]['senderID'] == _authService.getCurrentUser()!.uid;
+    bool isCurrentUser =
+        messages[index]['senderID'] == _authService.getCurrentUser()!.uid;
     // align message to the right if sender is current user
     var alignment =
         isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
@@ -169,17 +223,14 @@ class _ChatPageState extends State<ChatPage> {
             isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           ChatBubble(
-            message: messages[index]["message"],
-            isCurrentUser: isCurrentUser,
-            messageId: messages[index]['messageId'],
-            userId: messages[index]["senderID"],
-            timeStamp: formattedTime,
-            receiverId: messages[index]["receiverID"],
-            messageDeleted: messages[index]["messageDeleted"],
-              messageEdited: messages[index]["messageEdited"]
-
-          )
-
+              message: messages[index]["message"],
+              isCurrentUser: isCurrentUser,
+              messageId: messages[index]['messageId'],
+              userId: messages[index]["senderID"],
+              timeStamp: formattedTime,
+              receiverId: messages[index]["receiverID"],
+              messageDeleted: messages[index]["messageDeleted"],
+              messageEdited: messages[index]["messageEdited"])
         ],
       ),
     );

@@ -21,3 +21,8 @@ class GottenAllUsersStreamExcludingBlocked extends UsersEvents {
   final List<Map<String, dynamic>> users;
   GottenAllUsersStreamExcludingBlocked({required this.users});
 }
+
+class UpdateUserInfo extends UsersEvents {
+  final Map<String, dynamic> userInfo;
+  UpdateUserInfo({required this.userInfo});
+}

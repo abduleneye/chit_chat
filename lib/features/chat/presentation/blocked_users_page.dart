@@ -75,8 +75,9 @@ class _BlockedUsersPageState extends State<BlockedUsersPage> {
                 itemCount: state.blockedUsers.length,
                 itemBuilder: (context, index){
                   final user = state.blockedUsers[index];
-                  return UserTile(userName: user["email"],
-                    onTap: () => _showUnblockDialog(context, user['uid']),);
+                  return UserTile(
+                    userName: user["email"],
+                    onTap: () => _showUnblockDialog(context, user['uid']), isOnline: user["isOnline"], otherUserId: user['uid'],);
                 });
 
           }

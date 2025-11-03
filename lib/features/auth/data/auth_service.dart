@@ -37,6 +37,7 @@ class AuthService implements AuthServiceRepo{
         await _fireStore.collection("Users").doc(userCredential.user!.uid).set({
           'uid': userCredential.user!.uid,
           'email': userCredential.user!.email,
+          'isOnline': true
         });
         print("User added to Firestore ✅");
       } catch (e) {

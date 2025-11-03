@@ -326,4 +326,30 @@ class ChatService implements ChatServiceRepository {
     }
     // .update({'isRead': true})
   }
+
+  @override
+  Future<void> updateUserInfo(Map<String, dynamic> userInfo) async {
+    print("Update User Info");
+
+    final String currentUserId = _auth.currentUser!.uid;
+
+    try {
+      print("In Update User Info mess ID: ${userInfo}");
+      final docRef = _firestore
+          .collection("Users")
+          .doc(currentUserId);
+
+      final docSnap = await docRef.get();
+      if (docSnap.exists) {
+        await docRef.update(
+            userInfo
+        );
+        print("Details updated successfully ✅");
+      } else {
+        print("Message not found ❌");
+      }
+    } catch (e) {
+      print("Firestore delete error: $e");
+    }
+  }
 }

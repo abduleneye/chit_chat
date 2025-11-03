@@ -30,6 +30,10 @@ class UsersBloc extends Bloc<UsersEvents, UsersStates> {
       emit(UsersLoaded(users: event.users));
 
     });
+    on<UpdateUserInfo>((event, emit) async{
+      await chatRepo.updateUserInfo(event.userInfo);
+    });
+
 
     //Testing
     on<GetAllUsersStreamExcludingCurrentUser>((event, emit){
@@ -50,8 +54,12 @@ class UsersBloc extends Bloc<UsersEvents, UsersStates> {
       emit(UsersLoaded(users: event.users));
     });
 
+  }
 
-
+  @override
+  Future<void> close() {
+    _chatUsersSubscription?.cancel(); // <- this counts as usage
+    return super.close();
   }
 
 }

@@ -12,3 +12,4 @@ class UsersLoadingError extends UsersStates{
   final String errorMessage;
   UsersLoadingError({required this.errorMessage});
 }
+
