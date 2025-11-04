@@ -8,19 +8,21 @@ class MyTextfield extends StatelessWidget {
   final bool isObscured;
   final TextEditingController textEditingController;
   final FocusNode? focusNode;
+  final void Function(String)? onChanged;
   const MyTextfield(
       {super.key,
         this.isEnabled = true,
       required this.hintText,
       required this.isObscured,
       required this.textEditingController,
-      this.focusNode,  this.makeAutoFocus = false});
+      this.focusNode,  this.makeAutoFocus = false, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(
+        onChanged: onChanged,
         autofocus: makeAutoFocus,
         enabled: isEnabled,
         controller: textEditingController,

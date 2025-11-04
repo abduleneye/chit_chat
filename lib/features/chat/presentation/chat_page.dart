@@ -35,10 +35,12 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
+  final PresenceService presenceService = PresenceService();
 
   // chats & auth services
 
   final AuthService _authService = AuthService();
+
 
   // for text field focus
   FocusNode myFocusNode = FocusNode();
@@ -119,7 +121,7 @@ class _ChatPageState extends State<ChatPage> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.receiverEmail, style: TextStyle(fontSize: 24)),
+            Text(widget.receiverEmail, style: TextStyle(fontSize: 18)),
             StreamBuilder(
               stream: PresenceService().getUserStatus(widget.receiverID),
               builder: (context, snapshot) {
@@ -156,6 +158,29 @@ class _ChatPageState extends State<ChatPage> {
                 }
               },
             ),
+            StreamBuilder<bool>(
+              stream: presenceService.listenToTyping(_authService.getCurrentUser()!.uid, widget.receiverID),
+              builder: (context, snapshot) {
+                final isTyping = snapshot.data ?? false;
+                if (isTyping) {
+                  return  SizedBox(
+                    height: 12,
+                    child: Text(
+                      "Typing...",
+                      style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey, fontSize: 10),
+                    ),
+                  );
+                } else {
+                  return const SizedBox(
+                    height: 12,
+                    child: Text(
+                      "",
+                      style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey, fontSize: 10),
+                    ),
+                  );
+                }
+              },
+            )
           ],
         ),
         backgroundColor: Colors.transparent,
@@ -243,6 +268,9 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
               child: MyTextfield(
+                onChanged: (value){
+                  presenceService.handleTyping(_authService.getCurrentUser()!.uid, widget.receiverID);
+                },
             hintText: "Type a message",
             isObscured: false,
             textEditingController: _messageController,
