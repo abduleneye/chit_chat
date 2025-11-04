@@ -34,7 +34,10 @@ class UserTile extends StatelessWidget {
                StreamBuilder(
                  stream: PresenceService().getUserStatus(otherUserId),
                  builder: (context, snapshot) {
-                   if (!snapshot.hasData) return const Text("Offline");
+                   if (!snapshot.hasData) CircleAvatar(
+                     radius: 8,
+                     backgroundColor:  Colors.red,
+                   );
 
                    final data = snapshot.data!;
                    final isOnline = data["isOnline"] ?? false;
