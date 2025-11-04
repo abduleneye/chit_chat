@@ -144,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     );
                   } else {
                     return MyTextfield(
-                      hintText: 'Password',
+                      hintText: 'Confirm Password',
                       isObscured: true,
                       textEditingController: _cpwController,
                     );
