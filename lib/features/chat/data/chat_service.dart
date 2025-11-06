@@ -352,4 +352,22 @@ class ChatService implements ChatServiceRepository {
       print("Firestore delete error: $e");
     }
   }
+
+  @override
+  Stream<Map<String, dynamic>> getCurrentUserStream() {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) return const Stream.empty();
+
+    print("✅ Listening to current user: ${currentUser.uid}");
+    return _firestore
+        .collection("Users")
+        .doc(currentUser.uid)
+        .snapshots()
+        .map((doc) {
+     // if (!doc.exists) return null;
+      print("📡 Current user data updated: ${doc.data()}");
+      return doc.data() as Map<String, dynamic>;
+    });
+  }
+
 }

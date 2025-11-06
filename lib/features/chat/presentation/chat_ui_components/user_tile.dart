@@ -18,13 +18,13 @@ class UserTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: MediaQuery.of(context).size.height / 2, // half screen height
+      //  height: MediaQuery.of(context).size.height / 1.5, // half screen height
         width: MediaQuery.of(context).size.width * 0.8,
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(12)
         ),
-        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 25),
         padding: EdgeInsets.all(20),
         child: Column(
           children: [
@@ -34,7 +34,8 @@ class UserTile extends StatelessWidget {
                StreamBuilder(
                  stream: PresenceService().getUserStatus(otherUserId),
                  builder: (context, snapshot) {
-                   if (!snapshot.hasData) CircleAvatar(
+                   if (!snapshot.hasData)
+                     return CircleAvatar(
                      radius: 8,
                      backgroundColor:  Colors.red,
                    );
@@ -68,15 +69,17 @@ class UserTile extends StatelessWidget {
                  ),
                ),
 
-                SizedBox(height: 20,),
+                SizedBox(height: 25,),
 
-            Expanded(child: Text(
-              userName,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  color: Colors.black
-              ),
-            ),),
+          Text(
+            userName,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+                color: Colors.black
+            ),
+          ),
+            SizedBox(height: 25,),
+
             StreamBuilder(
               stream: PresenceService().getUserStatus(otherUserId),
               builder: (context, snapshot) {

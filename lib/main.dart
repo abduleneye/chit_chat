@@ -1,3 +1,4 @@
+//MBCuLIs25xuU9cfJ
 import 'package:chit_chat/core/home_page.dart';
 import 'package:chit_chat/features/auth/data/auth_service.dart';
 import 'package:chit_chat/features/auth/domain/auth_service_repo.dart';
@@ -6,6 +7,7 @@ import 'package:chit_chat/features/chat/data/chat_service.dart';
 import 'package:chit_chat/features/chat/domain/chat_repos/chat_service_repository.dart';
 import 'package:chit_chat/features/chat/presentation/block_users_bloc/block_users_bloc.dart';
 import 'package:chit_chat/features/chat/presentation/chat_bloc/chat_bloc.dart';
+import 'package:chit_chat/features/users_profile/presentation/profile_bloc/profile_bloc.dart';
 import 'package:chit_chat/firebase_options.dart';
 import 'package:chit_chat/vtu/dash_board.dart';
 import 'package:chit_chat/vtu/mine/buy_airtime_screen.dart';
@@ -17,6 +19,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/home_home.dart';
 import 'core/themes/light_mode.dart';
@@ -29,6 +32,10 @@ final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver();
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Supabase.initialize(
+    url: 'https://zihalociciionwkhgoha.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppaGFsb2NpY2lpb253a2hnb2hhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzMzgyOTQsImV4cCI6MjA3NzkxNDI5NH0.qjL_OYT7SRbU0-bk9IuCe0f97zoLofr-h2lHx9J4DMk',
+  );
   runApp(
     MultiRepositoryProvider(
         providers: [
@@ -44,6 +51,9 @@ void main() async{
       ),
           BlocProvider(
             create: (context)=> ChatBloc(context.read<ChatService>()),
+          ),
+          BlocProvider(
+            create: (context)=> ProfileBloc(context.read<ChatService>()),
           )
     ], child:  ChangeNotifierProvider(
         create: (context) => ThemeProvider(),

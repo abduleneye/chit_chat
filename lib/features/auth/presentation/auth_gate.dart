@@ -38,7 +38,7 @@ class AuthGate extends StatelessWidget {
             return BlocProvider(create: (_)=> UsersBloc(
                 context.read<ChatService>()
             ),
-              child: HomePage(currentUser: authState.currentUser?.email,
+              child: HomePage(currentUser: authState.currentUser,
               ),
 
             ); //HomePage(currentUser: authState.currentUser?.email,);

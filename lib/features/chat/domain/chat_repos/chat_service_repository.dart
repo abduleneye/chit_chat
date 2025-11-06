@@ -14,6 +14,7 @@ abstract class ChatServiceRepository{
   Future<void> editMessage(String messageId, String receiverId, String newMessage);
   Future<void> deleteMessage(String messageId, String receiverId);
   Future<void> updateUserInfo(Map<String, dynamic> userInfo);
+  Stream<Map<String, dynamic>> getCurrentUserStream();
 
 
 }

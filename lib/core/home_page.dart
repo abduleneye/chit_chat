@@ -17,8 +17,8 @@ import '../features/ephemerals/data/presence_service.dart';
 import 'components/my_drawer.dart';
 
 class HomePage extends StatefulWidget {
-  final String? currentUser;
-  const HomePage({
+  final User? currentUser;
+   HomePage({
     super.key,
     required this.currentUser,
   });
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         foregroundColor: Colors.grey,
         elevation: 0,
       ),
-      drawer: const MyDrawer(),
+      drawer:  MyDrawer(currentUserId: widget.currentUser!.uid,),
       body: _buildUserList(),
     );
   }
@@ -73,9 +73,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         if (userStates is UsersLoaded) {
           if (userStates.users.isNotEmpty) {
             return ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(vertical: 0),
+                shrinkWrap: false,
+              //  physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(vertical: 5),
                 itemCount: userStates.users.length,
                 itemBuilder: (context, index) {
                   return Row(
