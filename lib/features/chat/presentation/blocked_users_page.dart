@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'chat_bloc/chat_bloc.dart';
 
 class BlockedUsersPage extends StatefulWidget {
-   BlockedUsersPage({super.key});
+  BlockedUsersPage({super.key});
 
   @override
   State<BlockedUsersPage> createState() => _BlockedUsersPageState();
@@ -21,71 +21,80 @@ class _BlockedUsersPageState extends State<BlockedUsersPage> {
   final AuthService _authService = AuthService();
 
   //show confirm unblock box
-   void _showUnblockDialog(BuildContext context, String userId) {
-     showDialog(
-         context: context,
-         builder: (context) =>AlertDialog(
-           title: Text("Unblock User"),
-           content: Text("Are you sure you want to block this user?"),
-           actions: [
-             TextButton(onPressed: (){
-               Navigator.pop(context);
-             },
-                 child: Text("Cancel")
-             ),
-             TextButton(onPressed: (){
-               context.read<BlockUsersBloc>().add(UnBlockUser(userToBeUnBlockedId: userId));
-               Navigator.pop(context);
-               ScaffoldMessenger.of(context).showSnackBar(
-                 SnackBar(content: Text("User Unblocked"))
-               );
-             },
-                 child: Text("Unblock")
-             )
-           ],
+  void _showUnblockDialog(BuildContext context, String userId) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Unblock User"),
+              content: Text("Are you sure you want to block this user?"),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Cancel")),
+                TextButton(
+                    onPressed: () {
+                      context
+                          .read<BlockUsersBloc>()
+                          .add(UnBlockUser(userToBeUnBlockedId: userId));
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("User Unblocked")));
+                    },
+                    child: Text("Unblock"))
+              ],
+            ));
+  }
 
-         )
-     );
-   }
-@override
+  @override
   void initState() {
-  context.read<BlockUsersBloc>().add(LoadBlockedUsers(forUserId: _authService.getCurrentUser()!.uid));
+    context
+        .read<BlockUsersBloc>()
+        .add(LoadBlockedUsers(forUserId: _authService.getCurrentUser()!.uid));
     super.initState();
   }
-   @override
+
+  @override
   Widget build(BuildContext context) {
     String userId = _authService.getCurrentUser()!.uid;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("BLOCKED USERS"),
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.grey,
-        elevation: 0,
-      ),
-      body: BlocBuilder<BlockUsersBloc, BlockUsersState>(builder: (context, state){
-        if(state is Loading){
-          return Center(child: CircularProgressIndicator(),);
-
-        }else if (state is Loaded){
-          if(state.blockedUsers.isEmpty){
-            return Center(child: Text("No blocked user"),);
-
-          } else{
-            return ListView.builder(
-                itemCount: state.blockedUsers.length,
-                itemBuilder: (context, index){
-                  final user = state.blockedUsers[index];
-                  return UserTile(
-                    userName: user["email"],
-                    onTap: () => _showUnblockDialog(context, user['uid']), isOnline: user["isOnline"], otherUserId: user['uid'],);
-                });
-
+        appBar: AppBar(
+          title: Text("BLOCKED USERS"),
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.grey,
+          elevation: 0,
+        ),
+        body: BlocBuilder<BlockUsersBloc, BlockUsersState>(
+            builder: (context, state) {
+          if (state is Loading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is Loaded) {
+            if (state.blockedUsers.isEmpty) {
+              return Center(
+                child: Text("No blocked user"),
+              );
+            } else {
+              return ListView.builder(
+                  itemCount: state.blockedUsers.length,
+                  itemBuilder: (context, index) {
+                    final user = state.blockedUsers[index];
+                    return UserTile(
+                      userName: user["email"],
+                      onTap: () => _showUnblockDialog(context, user['uid']),
+                      isOnline: user["isOnline"],
+                      otherUserId: user['uid'],
+                      profilePicUrl: user["profileImage"], updatedAt: user["updatedAt"],
+                    );
+                  });
+            }
           }
-        }
 
-        return Center(child: Text("An Error occured"),);
-
-      })
-    );
+          return Center(
+            child: Text("An Error occured"),
+          );
+        }));
   }
 }

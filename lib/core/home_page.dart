@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       UserTile(
+                        profilePicUrl:userStates.users[index]["profileImage"],
                         isOnline: userStates.users[index]["isOnline"],
                         userName: userStates.users[index]["email"],
                         onTap: () {
@@ -101,7 +102,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     ),
                                   )));
                         }, otherUserId:userStates.users[index]
-                      ["uid"] ,
+                      ["uid"], updatedAt: userStates.users[index]["updatedAt"] ,
                       )
                     ],
                   );

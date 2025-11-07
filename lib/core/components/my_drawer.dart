@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../features/auth/data/auth_service.dart';
 import '../../core/settings_page.dart';
@@ -59,7 +60,7 @@ class _MyDrawerState extends State<MyDrawer> {
                        child:  CircleAvatar(
                          radius: 40,
                          child: ClipOval(
-                           clipBehavior: Clip.antiAlias,
+                          clipBehavior: Clip.antiAlias,
                            child:
                           BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state){
                             if(state is LoadingProfile ){
@@ -71,20 +72,24 @@ class _MyDrawerState extends State<MyDrawer> {
                               if(state.profile["profileImage"] == null){
                                 return Text("N/A");
                               }else{
-                                return Image.network(
-                                  state.profile['profileImage'],
-                                  width: 200,
-                                  height: 200,
+                                final versionedUrl = "${state.profile['profileImage']}?v=${state.profile['updatedAt'].microsecondsSinceEpoch}";
+
+                                return CachedNetworkImage(
+                                  imageUrl: versionedUrl,
+                                  key: ValueKey(versionedUrl),
+                                  width: 80,
+                                  height: 80,
                                   fit: BoxFit.cover,
-                                  loadingBuilder: (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
+
+                                  placeholder: (context, url) {
+                                    // child;
                                     return const Center(
                                       child: CircularProgressIndicator(),
                                     );
                                   },
-                                  errorBuilder: (context, error, stackTrace) {
+                                  errorWidget: (context, url, error ) {
                                     print("image error " + error.toString());
-                                    print("image error " + stackTrace.toString());
+                                    print("image error " + error.toString());
 
                                     return const Icon(Icons.error, color: Colors.red);
                                   },
