@@ -72,7 +72,7 @@ class _MyDrawerState extends State<MyDrawer> {
                               if(state.profile["profileImage"] == null){
                                 return Text("N/A");
                               }else{
-                                final versionedUrl = "${state.profile['profileImage']}?v=${state.profile['updatedAt'].microsecondsSinceEpoch}";
+                                final versionedUrl = "${state.profile['profileImage']}?v=${state.profile['updatedAt']?.microsecondsSinceEpoch}";
 
                                 return CachedNetworkImage(
                                   imageUrl: versionedUrl,
