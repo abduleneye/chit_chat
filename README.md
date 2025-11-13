@@ -53,17 +53,25 @@ ChitChat adopts **BLoC** as its central state management solution for:
 - **Testability** — simplifies unit and widget testing  
 
 ---
-
 ## 🎨 **Design**
 
-| Chat UI | VTU UI |
-|----------|---------|
-| <img src="[https://github.com/abduleneye/chit_chat/assets/chat_ui.jpg](https://github.com/abduleneye/chit_chat)" width="220"/> | <img src="https://github.com/abduleneye/chit_chat/assets/vtu_ui.jpg" width="220"/> |
+### Chat Module Screenshots
+<img src="https://github.com/abduleneye/chit_chat/assets/chat_1.jpg" width="220"/>  
+<img src="https://github.com/abduleneye/chit_chat/assets/chat_2.jpg" width="220"/>  
+<img src="https://github.com/abduleneye/chit_chat/assets/chat_3.jpg" width="220"/>  
 
----
+### VTU Module Screenshots
+<img src="https://github.com/abduleneye/chit_chat/assets/vtu_1.jpg" width="220"/>  
+<img src="https://github.com/abduleneye/chit_chat/assets/vtu_2.jpg" width="220"/>  
+<img src="https://github.com/abduleneye/chit_chat/assets/vtu_3.jpg" width="220"/>  
 
+### Additional Screenshots
+<img src="https://github.com/abduleneye/chit_chat/assets/other_1.jpg" width="220"/>  
+<img src="https://github.com/abduleneye/chit_chat/assets/other_2.jpg" width="220"/>  
+<img src="https://github.com/abduleneye/chit_chat/assets/other_3.jpg" width="220"/>  
+<img src="https://github.com/abduleneye/chit_chat/assets/other_4.jpg" width="220"/>
 ## ⚙️ **Installation**
-```bash
+
 git clone https://github.com/abduleneye/chit_chat.git
 cd chit_chat
 flutter pub get
