@@ -55,11 +55,9 @@ ChitChat adopts **BLoC** as its central state management solution for:
 ---
 ## 🎨 **Design**
 
-### Chat Module Screenshots
-<img src="https://github.com/abduleneye/chit_chat/blob/master/assets/login.jpg" width="220"/>  
-<img src="https://github.com/abduleneye/chit_chat/blob/master/assets/users.jpg" width="220"/>  
-<img src="https://github.com/abduleneye/chit_chat/assets/chat_3.jpg" width="220"/>  
+## 🎨 **Chat Module Screenshots**
 
+<img src="https://github.com/abduleneye/chit_chat/blob/master/assets/signup.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/login.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/users.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/Screenshot_2025-11-13-03-28-27-61_dcc0cdc607e3a1f4a8680cd89ec50966.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/mod.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/security.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/drawer.jpg" width="150"/>
 ### VTU Module Screenshots
 <img src="https://github.com/abduleneye/chit_chat/assets/vtu_1.jpg" width="220"/>  
 <img src="https://github.com/abduleneye/chit_chat/assets/vtu_2.jpg" width="220"/>  
