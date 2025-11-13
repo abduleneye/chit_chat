@@ -57,7 +57,7 @@ ChitChat adopts **BLoC** as its central state management solution for:
 
 ### Chat Module Screenshots
 <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/login.jpg" width="220"/>  
-<img src="https://github.com/abduleneye/chit_chat/assets/chat_2.jpg" width="220"/>  
+<img src="https://github.com/abduleneye/chit_chat/blob/master/assets/users.jpg" width="220"/>  
 <img src="https://github.com/abduleneye/chit_chat/assets/chat_3.jpg" width="220"/>  
 
 ### VTU Module Screenshots
