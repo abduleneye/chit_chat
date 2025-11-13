@@ -17,12 +17,12 @@ Each module operates independently within the same Flutter project, allowing for
 ## 🧩 **Modules**
 
 ### 💬 **Chat Module**
-- Dynamic message rendering with timestamps and avatars  
-- Structured for Firebase or WebSocket real-time updates  
-- Clear separation of UI, business logic, and data  
-- State handled through **BLoC** for clean event–state transitions  
-
----
+- Real-time messaging with dynamic message rendering, timestamps, and avatars  
+- Fully integrated with **Firebase** for authentication, messaging, and data storage  
+- **Supabase** used for storing and serving profile pictures  
+- Clear separation of UI, business logic, and data layers  
+- State managed with **BLoC** for predictable and testable event–state transitions  
+- Modular and scalable architecture suitable for production deployment
 
 ### ⚡ **VTU Module**
 - Airtime and data purchase flow  
@@ -55,19 +55,15 @@ ChitChat adopts **BLoC** as its central state management solution for:
 ---
 ## 🎨 **Design**
 
-## 🎨 **Chat Module Screenshots**
-
+### Chat Module Screenshots
 <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/signup.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/login.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/users.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/Screenshot_2025-11-13-03-28-27-61_dcc0cdc607e3a1f4a8680cd89ec50966.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/mod.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/security.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/drawer.jpg" width="150"/>
-### VTU Module Screenshots
-<img src="https://github.com/abduleneye/chit_chat/assets/vtu_1.jpg" width="220"/>  
-<img src="https://github.com/abduleneye/chit_chat/assets/vtu_2.jpg" width="220"/>  
-<img src="https://github.com/abduleneye/chit_chat/assets/vtu_3.jpg" width="220"/>  
 
-### Additional Screenshots
-<img src="https://github.com/abduleneye/chit_chat/assets/other_1.jpg" width="220"/>  
-<img src="https://github.com/abduleneye/chit_chat/assets/other_2.jpg" width="220"/>  
-<img src="https://github.com/abduleneye/chit_chat/assets/other_3.jpg" width="220"/>  
-<img src="https://github.com/abduleneye/chit_chat/assets/other_4.jpg" width="220"/>
+<br>
+
+### VTU Module Screenshots
+<img src="https://github.com/abduleneye/chit_chat/blob/master/assets/db.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/airtime.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/data.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/bet.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/util.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/ref.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/profile.jpg" width="150"/>
+
+
 ## ⚙️ **Installation**
 
 git clone https://github.com/abduleneye/chit_chat.git
