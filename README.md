@@ -1,7 +1,9 @@
-# 💬 **ChitChat**
+# 💬 ChitChat – Flutter Multi-Module App
 
-**ChitChat** is a modern multi-module Flutter application that integrates a full-featured **chat system** with an **API-ready VTU (Virtual Top-Up)** module.  
-It’s built with a **scalable modular architecture** and **BLoC state management**, ensuring predictable state flow, maintainability, and production-level stability.
+[📥 Download APK](https://github.com/abduleneye/chit_chat/releases/download/v1.0/app-release.apk)  
+
+**ChitChat** is a multi-module **Flutter application** featuring a **real-time chat system** and an **API-ready VTU (Virtual Top-Up) module**.  
+Built with **BLoC state management** and a **modular architecture** for scalable, maintainable mobile development.
 
 ---
 
@@ -9,8 +11,6 @@ It’s built with a **scalable modular architecture** and **BLoC state managemen
 
 ChitChat brings together seamless messaging and digital utility services under one unified app.  
 It provides a **real-time communication experience** and an **extendable VTU system** structured for quick backend integration.
-
-Each module operates independently within the same Flutter project, allowing for feature isolation, modular updates, and scalable development.
 
 ---
 
@@ -25,34 +25,14 @@ Each module operates independently within the same Flutter project, allowing for
 - Modular and scalable architecture suitable for production deployment
 
 ### ⚡ **VTU Module**
-- Airtime and data purchase flow  
+- Airtime and data purchase flows  
 - Validation and transaction status management  
-- API-ready repository structure  
-- Uses **BLoC** for handling loading, success, and error states  
+- API-ready repository structure for backend integration  
+- State handled via **BLoC** for clean loading, success, and error handling  
+- Designed for scalability and easy extension
 
 ---
 
-## 🧱 **Architecture**
-
-- **Framework:** Flutter  
-- **Language:** Dart  
-- **State Management:** **BLoC (Business Logic Component)**  
-- **Architecture Pattern:** Feature-based Modular Architecture  
-- **Dependency Management:** Flutter Pub  
-- **Version Control:** Git & GitHub  
-
----
-
-## 🔁 **Why BLoC**
-
-ChitChat adopts **BLoC** as its central state management solution for:
-- **Predictable behavior** — each action leads to a defined state  
-- **Scalability** — easy to extend or maintain multiple modules  
-- **Separation of concerns** — UI and business logic are fully decoupled  
-- **Reusability** — same logic can serve different UI components  
-- **Testability** — simplifies unit and widget testing  
-
----
 ## 🎨 **Design**
 
 ### Chat Module Screenshots
@@ -63,10 +43,22 @@ ChitChat adopts **BLoC** as its central state management solution for:
 ### VTU Module Screenshots
 <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/db.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/airtime.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/data.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/bet.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/util.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/ref.jpg" width="150"/> <img src="https://github.com/abduleneye/chit_chat/blob/master/assets/profile.jpg" width="150"/>
 
+---
 
-## ⚙️ **Installation**
+## ⚙️ **Installation / Download**
 
+You can either **run the app from source** or **download the APK** directly.
+
+### 1️⃣ Run from Source
+```bash
+# Clone the repository
 git clone https://github.com/abduleneye/chit_chat.git
+
+# Navigate into the project folder
 cd chit_chat
+
+# Install dependencies
 flutter pub get
+
+# Run the app on an emulator or physical device
 flutter run
